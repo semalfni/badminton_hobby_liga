@@ -17,7 +17,8 @@
     "no": "No",
     "search": "Search",
     "admin": "Admin",
-    "teamManager": "Team Manager"
+    "teamManager": "Team Manager",
+    "observer": "Observer"
   },
   "nav": {
     "standings": "Standings",
@@ -32,7 +33,8 @@
     "username": "Username",
     "password": "Password",
     "loginButton": "Login",
-    "error": "Invalid username or password"
+    "error": "Invalid username or password",
+    "defaultAccount": "Default observer account"
   },
   "standings": {
     "title": "League Standings",
@@ -138,11 +140,17 @@
     "username": "Username",
     "password": "Password",
     "role": "Role",
+    "team": "Team",
     "assignedTeam": "Assigned Team",
     "noTeam": "No team",
     "confirmDelete": "Are you sure you want to delete this user?",
-    "adminRole": "Admin",
-    "teamManagerRole": "Team Manager"
+    "admin": "Admin",
+    "teamManager": "Team Manager",
+    "observer": "Observer",
+    "actions": "Actions",
+    "noUsers": "No users found",
+    "leaveBlank": "leave blank to keep current",
+    "enterPassword": "Enter password"
   },
   "errors": {
     "generic": "An error occurred",

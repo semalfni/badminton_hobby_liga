@@ -51,6 +51,24 @@ async function initializeDatabase() {
       console.log('✅ Admin user already exists');
     }
     
+    // Check if observer user exists
+    const observerCheck = await sql`
+      SELECT id FROM users WHERE username = 'guest' LIMIT 1
+    `;
+    
+    if (observerCheck.rows.length === 0) {
+      // Create default observer user
+      const bcrypt = await import('bcryptjs');
+      const hashedPassword = await bcrypt.default.hash('guest', 10);
+      await sql`
+        INSERT INTO users (username, password, role)
+        VALUES ('guest', ${hashedPassword}, 'observer')
+      `;
+      console.log('✅ Default observer user created (username: guest, password: guest)');
+    } else {
+      console.log('✅ Observer user already exists');
+    }
+    
     console.log('🎉 Database initialization complete!');
     process.exit(0);
   } catch (error) {

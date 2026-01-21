@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import database from './database-postgres.js';
-import { authenticateToken, requireRole, AuthRequest } from './auth.js';
+import { authenticateToken, requireRole, requireCanEdit, AuthRequest } from './auth.js';
 
 const app = express();
 const PORT = 3001;
@@ -89,7 +89,7 @@ app.post('/api/teams', authenticateToken, requireRole('admin'), async (req, res)
   }
 });
 
-app.put('/api/teams/:id', authenticateToken, async (req: AuthRequest, res) => {
+app.put('/api/teams/:id', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const teamId = Number(req.params.id);
     
@@ -125,7 +125,7 @@ app.get('/api/players', async (req, res) => {
   }
 });
 
-app.post('/api/players', authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/players', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const { team_id, name } = req.body;
     
@@ -140,7 +140,7 @@ app.post('/api/players', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
-app.put('/api/players/:id', authenticateToken, async (req: AuthRequest, res) => {
+app.put('/api/players/:id', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const playerId = Number(req.params.id);
     const player = await database.getPlayerById(playerId);
@@ -161,7 +161,7 @@ app.put('/api/players/:id', authenticateToken, async (req: AuthRequest, res) => 
   }
 });
 
-app.delete('/api/players/:id', authenticateToken, async (req: AuthRequest, res) => {
+app.delete('/api/players/:id', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const playerId = Number(req.params.id);
     const player = await database.getPlayerById(playerId);
@@ -213,7 +213,7 @@ app.post('/api/matches', authenticateToken, requireRole('admin'), async (req, re
   }
 });
 
-app.put('/api/matches/:id', authenticateToken, async (req: AuthRequest, res) => {
+app.put('/api/matches/:id', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const matchId = Number(req.params.id);
     const match = await database.getMatchById(matchId);
@@ -245,7 +245,7 @@ app.delete('/api/matches/:id', authenticateToken, requireRole('admin'), async (r
 });
 
 // ===== MATCH PAIRS (Protected - Team managers can update their team's matches) =====
-app.put('/api/match-pairs/:id', authenticateToken, async (req: AuthRequest, res) => {
+app.put('/api/match-pairs/:id', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const pair = await database.updateMatchPair(Number(req.params.id), req.body);
     const matchId = pair.match_id;
@@ -305,7 +305,7 @@ app.get('/api/matches/:matchId/nominated-players/:teamId', async (req, res) => {
   }
 });
 
-app.post('/api/matches/:matchId/nominate', authenticateToken, async (req: AuthRequest, res) => {
+app.post('/api/matches/:matchId/nominate', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const { player_id } = req.body;
     const matchId = Number(req.params.matchId);
@@ -333,7 +333,7 @@ app.post('/api/matches/:matchId/nominate', authenticateToken, async (req: AuthRe
   }
 });
 
-app.delete('/api/matches/:matchId/nominate/:playerId', authenticateToken, async (req: AuthRequest, res) => {
+app.delete('/api/matches/:matchId/nominate/:playerId', authenticateToken, requireCanEdit, async (req: AuthRequest, res) => {
   try {
     const matchId = Number(req.params.matchId);
     const playerId = Number(req.params.playerId);

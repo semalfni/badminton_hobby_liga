@@ -12,7 +12,7 @@ export default function MatchDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, canEdit } = useAuth();
   const [editingPairId, setEditingPairId] = useState<number | null>(null);
   const [showNominations, setShowNominations] = useState(false);
 
@@ -270,7 +270,7 @@ export default function MatchDetail() {
     return <div className="text-center py-8">Match not found</div>;
   }
 
-  const canEditMatch = isAdmin || user?.team_id === match.home_team_id || user?.team_id === match.away_team_id;
+  const canEditMatch = (isAdmin || user?.team_id === match.home_team_id || user?.team_id === match.away_team_id) && canEdit;
 
   // Calculate total points from all pairs
   const calculateTotalPoints = () => {

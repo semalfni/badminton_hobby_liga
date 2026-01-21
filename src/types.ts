@@ -10,7 +10,7 @@ export interface Team {
 export interface User {
   id: number;
   username: string;
-  role: 'admin' | 'team_manager';
+  role: 'admin' | 'team_manager' | 'observer';
   team_id: number | null;
   created_at?: string;
 }

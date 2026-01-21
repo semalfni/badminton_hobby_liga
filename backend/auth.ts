@@ -7,7 +7,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: number;
     username: string;
-    role: 'admin' | 'team_manager';
+    role: 'admin' | 'team_manager' | 'observer';
     team_id: number | null;
   };
 }
@@ -76,4 +76,16 @@ export function requireTeamAccess(req: AuthRequest, res: Response, next: NextFun
   }
 
   return res.status(403).json({ error: 'Access denied to this team' });
+}
+
+export function requireCanEdit(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  if (req.user.role === 'observer') {
+    return res.status(403).json({ error: 'Observers cannot edit data' });
+  }
+
+  next();
 }

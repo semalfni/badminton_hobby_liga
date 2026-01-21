@@ -12,7 +12,7 @@ export default function Users() {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    role: 'team_manager' as 'admin' | 'team_manager',
+    role: 'team_manager' as 'admin' | 'team_manager' | 'observer',
     team_id: null as number | null,
   });
 
@@ -145,12 +145,13 @@ export default function Users() {
                 required
                 value={formData.role}
                 onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value as 'admin' | 'team_manager' })
+                  setFormData({ ...formData, role: e.target.value as 'admin' | 'team_manager' | 'observer' })
                 }
                 className="input"
               >
                 <option value="team_manager">{t('users.teamManager')}</option>
                 <option value="admin">{t('users.admin')}</option>
+                <option value="observer">{t('users.observer')}</option>
               </select>
             </div>
             {formData.role === 'team_manager' && (
@@ -209,10 +210,12 @@ export default function Users() {
                     className={`px-2 py-1 text-xs font-medium rounded ${
                       user.role === 'admin'
                         ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                        : user.role === 'observer'
+                        ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
                         : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                     }`}
                   >
-                    {user.role === 'admin' ? t('users.admin') : t('users.teamManager')}
+                    {user.role === 'admin' ? t('users.admin') : user.role === 'observer' ? t('users.observer') : t('users.teamManager')}
                   </span>
                 </td>
                 <td className="py-3 px-4 text-gray-700 dark:text-gray-300">

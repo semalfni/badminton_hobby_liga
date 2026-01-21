@@ -90,11 +90,11 @@ function Login() {
 
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              <strong>Default admin account:</strong>
+              <strong>{t('login.defaultAccount')}:</strong>
               <br />
-              Username: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">admin</code>
+              {t('login.username')}: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">guest</code>
               <br />
-              Password: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">admin123</code>
+              {t('login.password')}: <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">guest</code>
             </p>
           </div>
         </div>

@@ -8,7 +8,7 @@ import type { Player, Team } from '../types';
 export default function Players() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, canEdit } = useAuth();
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -76,11 +76,11 @@ export default function Players() {
   };
 
   const canManagePlayer = (player: Player) => {
-    return isAdmin || user?.team_id === player.team_id;
+    return (isAdmin || user?.team_id === player.team_id) && canEdit;
   };
 
   const canAddPlayer = (teamId: number) => {
-    return isAdmin || user?.team_id === teamId;
+    return (isAdmin || user?.team_id === teamId) && canEdit;
   };
 
   const groupedPlayers = players?.reduce((acc, player) => {

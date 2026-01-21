@@ -8,7 +8,7 @@ import type { Team } from '../types';
 export default function Teams() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, canEdit } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ name: '', home_day: '', home_time: '', address: '' });
@@ -161,7 +161,7 @@ export default function Teams() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {teams?.map((team) => {
-          const canEdit = isAdmin || user?.team_id === team.id;
+          const canEditTeam = (isAdmin || user?.team_id === team.id) && canEdit;
           
           return (
             <div key={team.id} className="card">
@@ -169,7 +169,7 @@ export default function Teams() {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                   {team.name}
                 </h3>
-                {canEdit && (
+                {canEditTeam && (
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(team)}

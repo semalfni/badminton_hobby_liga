@@ -10,7 +10,7 @@ export default function Matches() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, canEdit } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
     home_team_id: 0,
@@ -96,7 +96,7 @@ export default function Matches() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('matches.title')}</h1>
-        {!isAdding && isAdmin && (
+        {!isAdding && canEdit && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
             + {t('matches.addMatch')}
           </button>
@@ -233,7 +233,7 @@ export default function Matches() {
                 >
                   {t('matches.viewDetails')}
                 </button>
-                {isAdmin && (
+                {canEdit && (
                   <>
                     <button
                       onClick={() => toggleCompleteMutation.mutate({ id: match.id, match })}

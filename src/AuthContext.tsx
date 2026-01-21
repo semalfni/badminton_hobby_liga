@@ -9,6 +9,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isTeamManager: boolean;
+  isObserver: boolean;
+  canEdit: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,6 +66,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
         isTeamManager: user?.role === 'team_manager',
+        isObserver: user?.role === 'observer',
+        canEdit: user?.role === 'admin' || user?.role === 'team_manager',
       }}
     >
       {children}
