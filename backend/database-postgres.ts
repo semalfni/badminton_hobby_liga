@@ -352,40 +352,42 @@ const database = {
       let pairsLost = 0;
       
       homeMatches.forEach((m: any) => {
-        pairsWon += m.home_score;
-        pairsLost += m.away_score;
+        pairsWon += m.home_score || 0;
+        pairsLost += m.away_score || 0;
         if (m.home_score > m.away_score) wins++;
         else if (m.home_score < m.away_score) losses++;
         else draws++;
       });
       
       awayMatches.forEach((m: any) => {
-        pairsWon += m.away_score;
-        pairsLost += m.home_score;
+        pairsWon += m.away_score || 0;
+        pairsLost += m.home_score || 0;
         if (m.away_score > m.home_score) wins++;
         else if (m.away_score < m.home_score) losses++;
         else draws++;
       });
       
       const played = wins + losses + draws;
-      const points = wins * 3 + draws;
+      const matchPoints = wins * 3 + draws; // Points for winning matches
       const pairsDiff = pairsWon - pairsLost;
       
       return {
         team_id: team.id,
         team_name: team.name,
         played,
-        wins,
+        won: wins,
         draws,
-        losses,
-        pairs_won: pairsWon,
-        pairs_lost: pairsLost,
-        pairs_diff: pairsDiff,
-        points,
+        lost: losses,
+        games_won: pairsWon,
+        games_lost: pairsLost,
+        match_points: matchPoints, // Points from match wins
+        points: pairsWon, // Total points from all games won
       };
     }).sort((a: any, b: any) => {
+      // Sort by total game points first, then by match points
       if (b.points !== a.points) return b.points - a.points;
-      return b.pairs_diff - a.pairs_diff;
+      if (b.match_points !== a.match_points) return b.match_points - a.match_points;
+      return pairsDiff;
     });
   },
 

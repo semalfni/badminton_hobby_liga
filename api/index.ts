@@ -2,21 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import { authenticateToken, requireRole } from '../backend/auth.js';
 import type { AuthRequest } from '../backend/auth.js';
+import database from '../backend/database-postgres.js';
 
-// Use Postgres database for Vercel, fallback to JSON for local dev
-const USE_POSTGRES = process.env.POSTGRES_URL || process.env.USE_POSTGRES === 'true';
-let database: any;
-
-if (USE_POSTGRES) {
-  const dbModule = await import('../backend/database-postgres.js');
-  database = dbModule.database || dbModule.default;
-  // Initialize database
-  if (database && database.initialize) {
-    await database.initialize();
-  }
-} else {
-  const dbModule = await import('../backend/database.js');
-  database = dbModule.default;
+// Initialize database
+if (database.initialize) {
+  await database.initialize();
 }
 
 const app = express();
@@ -26,7 +16,7 @@ app.use(express.json());
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', database: USE_POSTGRES ? 'postgres' : 'json' });
+  res.json({ status: 'ok', database: 'postgres' });
 });
 
 // Auth endpoints

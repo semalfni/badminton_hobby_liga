@@ -34,41 +34,46 @@ export default function Standings() {
             </tr>
           </thead>
           <tbody>
-            {standings?.map((standing, index) => (
-              <tr
-                key={standing.team_id}
-                className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-              >
-                <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
-                  {index + 1}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
-                  {standing.team_name}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                  {standing.played}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-green-600 dark:text-green-400">
-                  {standing.won}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-red-600 dark:text-red-400">
-                  {standing.lost}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
-                  {standing.games_won}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
-                  {standing.games_lost}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                  {standing.games_won - standing.games_lost > 0 ? '+' : ''}
-                  {standing.games_won - standing.games_lost}
-                </td>
-                <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-900 dark:text-white font-bold">
-                  {standing.points}
-                </td>
-              </tr>
-            ))}
+            {standings?.map((standing, index) => {
+              const gamesWon = standing.games_won || 0;
+              const gamesLost = standing.games_lost || 0;
+              const diff = gamesWon - gamesLost;
+              
+              return (
+                <tr
+                  key={standing.team_id}
+                  className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
+                    {index + 1}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
+                    {standing.team_name}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                    {standing.played || 0}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-green-600 dark:text-green-400">
+                    {standing.won || 0}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-red-600 dark:text-red-400">
+                    {standing.lost || 0}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                    {gamesWon}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                    {gamesLost}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                    {diff > 0 ? '+' : ''}{diff}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-900 dark:text-white font-bold">
+                    {standing.points || 0}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
