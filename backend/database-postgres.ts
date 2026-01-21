@@ -565,6 +565,9 @@ const database = {
   },
 };
 
-// Export both named and default for maximum compatibility
+console.log('database-postgres.ts: Database object created');
+console.log('database-postgres.ts: Has login method:', typeof database.login);
+console.log('database-postgres.ts: Object keys:', Object.keys(database).slice(0, 10));
+
 export { database };
 export default database;

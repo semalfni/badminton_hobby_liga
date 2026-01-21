@@ -7,17 +7,40 @@ import type { AuthRequest } from '../backend/auth.js';
 const USE_POSTGRES = process.env.POSTGRES_URL || process.env.USE_POSTGRES === 'true';
 let database: any;
 
+console.log('=== DATABASE INITIALIZATION ===');
+console.log('USE_POSTGRES:', USE_POSTGRES);
+console.log('POSTGRES_URL exists:', !!process.env.POSTGRES_URL);
+
 if (USE_POSTGRES) {
+  console.log('Importing Postgres database module...');
   const dbModule = await import('../backend/database-postgres.js');
-  database = dbModule.default;
+  console.log('Module imported. Keys:', Object.keys(dbModule));
+  console.log('dbModule.default type:', typeof dbModule.default);
+  console.log('dbModule.database type:', typeof dbModule.database);
+  
+  // Try both named and default export for compatibility
+  database = dbModule.database || dbModule.default;
+  
+  console.log('Database assigned. Type:', typeof database);
+  if (database) {
+    console.log('Database keys:', Object.keys(database).slice(0, 10));
+    console.log('Has login method:', typeof database.login);
+  } else {
+    console.error('ERROR: Database is null/undefined!');
+  }
+  
   // Initialize database
-  if (database.initialize) {
+  if (database && database.initialize) {
+    console.log('Initializing database...');
     await database.initialize();
   }
 } else {
+  console.log('Using JSON file database');
   const dbModule = await import('../backend/database.js');
   database = dbModule.default;
 }
+
+console.log('=== DATABASE READY ===');
 
 const app = express();
 
