@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api';
 import type { User, Team } from '../types';
 
 export default function Users() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -89,16 +91,16 @@ export default function Users() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8">{t('common.loading')}</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('users.title')}</h1>
         {!isAdding && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
-            + Add User
+            + {t('users.addUser')}
           </button>
         )}
       </div>
@@ -106,12 +108,12 @@ export default function Users() {
       {isAdding && (
         <div className="card mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            {editingId ? 'Edit User' : 'Add New User'}
+            {editingId ? t('users.editUser') : t('users.addUser')}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Username
+                {t('users.username')}
               </label>
               <input
                 type="text"
@@ -124,7 +126,7 @@ export default function Users() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Password {editingId && '(leave blank to keep current)'}
+                {t('users.password')} {editingId && `(${t('users.leaveBlank')})`}
               </label>
               <input
                 type="password"
@@ -132,12 +134,12 @@ export default function Users() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="input"
-                placeholder="Enter password"
+                placeholder={t('users.enterPassword')}
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Role
+                {t('users.role')}
               </label>
               <select
                 required
@@ -147,14 +149,14 @@ export default function Users() {
                 }
                 className="input"
               >
-                <option value="team_manager">Team Manager</option>
-                <option value="admin">Admin</option>
+                <option value="team_manager">{t('users.teamManager')}</option>
+                <option value="admin">{t('users.admin')}</option>
               </select>
             </div>
             {formData.role === 'team_manager' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Assigned Team
+                  {t('users.assignedTeam')}
                 </label>
                 <select
                   required
@@ -164,7 +166,7 @@ export default function Users() {
                   }
                   className="input"
                 >
-                  <option value="">Select a team</option>
+                  <option value="">{t('players.selectTeam')}</option>
                   {teams?.map((team) => (
                     <option key={team.id} value={team.id}>
                       {team.name}
@@ -175,10 +177,10 @@ export default function Users() {
             )}
             <div className="flex gap-2">
               <button type="submit" className="btn btn-primary">
-                {editingId ? 'Update' : 'Create'}
+                {editingId ? t('common.update') : t('common.create')}
               </button>
               <button type="button" onClick={handleCancel} className="btn btn-secondary">
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>
@@ -189,10 +191,10 @@ export default function Users() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">Username</th>
-              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">Role</th>
-              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">Team</th>
-              <th className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">Actions</th>
+              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">{t('users.username')}</th>
+              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">{t('users.role')}</th>
+              <th className="text-left py-3 px-4 text-gray-700 dark:text-gray-300">{t('users.team')}</th>
+              <th className="text-right py-3 px-4 text-gray-700 dark:text-gray-300">{t('users.actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -210,7 +212,7 @@ export default function Users() {
                         : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                     }`}
                   >
-                    {user.role === 'admin' ? 'Admin' : 'Team Manager'}
+                    {user.role === 'admin' ? t('users.admin') : t('users.teamManager')}
                   </span>
                 </td>
                 <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
@@ -221,17 +223,17 @@ export default function Users() {
                     onClick={() => handleEdit(user)}
                     className="text-blue-600 hover:text-blue-700 text-sm mr-3"
                   >
-                    Edit
+                    {t('common.edit')}
                   </button>
                   <button
                     onClick={() => {
-                      if (confirm('Are you sure you want to delete this user?')) {
+                      if (confirm(t('users.confirmDelete'))) {
                         deleteMutation.mutate(user.id);
                       }
                     }}
                     className="text-red-600 hover:text-red-700 text-sm"
                   >
-                    Delete
+                    {t('common.delete')}
                   </button>
                 </td>
               </tr>
@@ -241,7 +243,7 @@ export default function Users() {
 
         {(!users || users.length === 0) && !isAdding && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-            No users found.
+            {t('users.noUsers')}
           </div>
         )}
       </div>

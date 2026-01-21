@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { api } from '../api';
 
 interface PlayerStatistics {
@@ -14,18 +15,19 @@ interface PlayerStatistics {
 }
 
 function Statistics() {
+  const { t } = useTranslation();
   const { data: statistics, isLoading } = useQuery<PlayerStatistics[]>({
     queryKey: ['player-statistics'],
     queryFn: api.getPlayerStatistics,
   });
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8">{t('common.loading')}</div>;
   }
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Player Statistics</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t('statistics.title')}</h1>
 
       <div className="card">
         <div className="overflow-x-auto">
@@ -33,31 +35,31 @@ function Statistics() {
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Rank
+                  {t('statistics.rank')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Player
+                  {t('statistics.player')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Team
+                  {t('statistics.team')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Games Played
+                  {t('statistics.gamesPlayed')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Games Won
+                  {t('statistics.gamesWon')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Games Lost
+                  {t('statistics.gamesLost')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Win Rate
+                  {t('statistics.winRate')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Total Points
+                  {t('statistics.totalPoints')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Avg Points
+                  {t('statistics.avgPoints')}
                 </th>
               </tr>
             </thead>
@@ -127,7 +129,7 @@ function Statistics() {
           
           {statistics && statistics.length === 0 && (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              No player statistics available yet
+              {t('statistics.noData')}
             </div>
           )}
         </div>
@@ -136,19 +138,19 @@ function Statistics() {
       <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card bg-blue-50 dark:bg-blue-900/20">
           <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
-            🏆 Most Points
+            {t('statistics.mostPoints')}
           </h3>
           <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             {statistics?.[0]?.name || 'N/A'}
           </div>
           <div className="text-sm text-blue-700 dark:text-blue-500">
-            {statistics?.[0]?.total_points || 0} points
+            {statistics?.[0]?.total_points || 0} {t('statistics.points')}
           </div>
         </div>
 
         <div className="card bg-green-50 dark:bg-green-900/20">
           <h3 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-2">
-            🎯 Best Win Rate
+            {t('statistics.bestWinRate')}
           </h3>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {statistics && statistics.length > 0 
@@ -175,7 +177,7 @@ function Statistics() {
 
         <div className="card bg-purple-50 dark:bg-purple-900/20">
           <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-300 mb-2">
-            ⚡ Most Active
+            {t('statistics.mostActive')}
           </h3>
           <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
             {statistics && statistics.length > 0 
@@ -185,8 +187,8 @@ function Statistics() {
           </div>
           <div className="text-sm text-purple-700 dark:text-purple-500">
             {statistics && statistics.length > 0 
-              ? `${[...statistics].sort((a, b) => b.games_played - a.games_played)[0]?.games_played || 0} games`
-              : '0 games'
+              ? `${[...statistics].sort((a, b) => b.games_played - a.games_played)[0]?.games_played || 0} ${t('statistics.games')}`
+              : `0 ${t('statistics.games')}`
             }
           </div>
         </div>

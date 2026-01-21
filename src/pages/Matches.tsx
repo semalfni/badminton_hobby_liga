@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import { api } from '../api';
 import type { Match, Team } from '../types';
 
 export default function Matches() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
@@ -87,16 +89,16 @@ export default function Matches() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8">{t('common.loading')}</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Matches</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('matches.title')}</h1>
         {!isAdding && isAdmin && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
-            + Schedule Match
+            + {t('matches.addMatch')}
           </button>
         )}
       </div>
@@ -104,13 +106,13 @@ export default function Matches() {
       {isAdding && (
         <div className="card mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            Schedule New Match
+            {t('matches.addMatch')}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Home Team
+                  {t('matches.homeTeam')}
                 </label>
                 <select
                   required
@@ -118,7 +120,7 @@ export default function Matches() {
                   onChange={(e) => handleHomeTeamChange(Number(e.target.value))}
                   className="input"
                 >
-                  <option value={0}>Select home team</option>
+                  <option value={0}>{t('players.selectTeam')}</option>
                   {teams?.map((team) => (
                     <option key={team.id} value={team.id}>
                       {team.name}
@@ -128,7 +130,7 @@ export default function Matches() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Away Team
+                  {t('matches.awayTeam')}
                 </label>
                 <select
                   required
@@ -138,7 +140,7 @@ export default function Matches() {
                   }
                   className="input"
                 >
-                  <option value={0}>Select away team</option>
+                  <option value={0}>{t('players.selectTeam')}</option>
                   {teams
                     ?.filter((team) => team.id !== formData.home_team_id)
                     .map((team) => (
@@ -151,7 +153,7 @@ export default function Matches() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Match Date
+                {t('matches.matchDate')}
               </label>
               <input
                 type="date"
@@ -163,7 +165,7 @@ export default function Matches() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Location (auto-filled from home team address)
+                {t('matches.location')}
               </label>
               <input
                 type="text"
@@ -171,15 +173,15 @@ export default function Matches() {
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 className="input"
-                placeholder="Location will be set from home team address"
+                placeholder={t('matches.location')}
               />
             </div>
             <div className="flex gap-2">
               <button type="submit" className="btn btn-primary">
-                Schedule
+                {t('common.create')}
               </button>
               <button type="button" onClick={handleCancel} className="btn btn-secondary">
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>
@@ -199,7 +201,7 @@ export default function Matches() {
                         : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                     }`}
                   >
-                    {match.completed ? 'Completed' : 'Scheduled'}
+                    {match.completed ? t('matches.completed') : t('matches.inProgress')}
                   </span>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {formatDate(match.match_date)}
@@ -229,7 +231,7 @@ export default function Matches() {
                   onClick={() => navigate(`/matches/${match.id}`)}
                   className="btn btn-primary text-sm"
                 >
-                  Details
+                  {t('matches.viewDetails')}
                 </button>
                 {isAdmin && (
                   <>
@@ -237,17 +239,17 @@ export default function Matches() {
                       onClick={() => toggleCompleteMutation.mutate({ id: match.id, match })}
                       className="btn btn-secondary text-sm"
                     >
-                      {match.completed ? 'Reopen' : 'Complete'}
+                      {match.completed ? t('matchDetail.reopenMatch') : t('matchDetail.markCompleted')}
                     </button>
                     <button
                       onClick={() => {
-                        if (confirm('Are you sure you want to delete this match?')) {
+                        if (confirm(t('matches.confirmDelete'))) {
                           deleteMutation.mutate(match.id);
                         }
                       }}
                       className="text-red-600 hover:text-red-700 text-sm px-2"
                     >
-                      Delete
+                      {t('common.delete')}
                     </button>
                   </>
                 )}
@@ -259,7 +261,7 @@ export default function Matches() {
 
       {(!matches || matches.length === 0) && !isAdding && (
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-          No matches scheduled yet. Create your first match!
+          {t('matches.addMatch')}
         </div>
       )}
     </div>

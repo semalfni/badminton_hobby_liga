@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import { api } from '../api';
 import { PairScoreDisplay } from '../components/PairScoreDisplay';
 import type { MatchWithPairs, Player } from '../types';
 
 export default function MatchDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -291,14 +293,14 @@ export default function MatchDetail() {
         onClick={() => navigate('/matches')}
         className="mb-4 text-blue-600 hover:text-blue-700 dark:text-blue-400"
       >
-        ← Back to Matches
+        {t('matchDetail.backToMatches')}
       </button>
 
       <div className="card mb-6">
         <div className="flex justify-between items-start mb-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Match Details
+              {t('matchDetail.title')}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{formatDate(match.match_date)}</p>
             <p className="text-gray-600 dark:text-gray-400">📍 {match.location}</p>
@@ -310,7 +312,7 @@ export default function MatchDetail() {
                 : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
             }`}
           >
-            {match.completed ? 'Completed' : 'In Progress'}
+            {match.completed ? t('matches.completed') : t('matches.inProgress')}
           </span>
         </div>
 
@@ -320,15 +322,15 @@ export default function MatchDetail() {
               {match.home_team_name}
             </div>
             <div className="text-5xl font-bold text-blue-600">{match.home_score}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({homeTotalPoints} total points)</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({t('matchDetail.totalPoints', { count: homeTotalPoints })})</div>
           </div>
-          <div className="text-3xl font-bold text-gray-400">VS</div>
+          <div className="text-3xl font-bold text-gray-400">{t('matches.vs').toUpperCase()}</div>
           <div className="text-center">
             <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               {match.away_team_name}
             </div>
             <div className="text-5xl font-bold text-red-600">{match.away_score}</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({awayTotalPoints} total points)</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({t('matchDetail.totalPoints', { count: awayTotalPoints })})</div>
           </div>
         </div>
       </div>
@@ -337,13 +339,13 @@ export default function MatchDetail() {
         <div className="card mb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Player Nominations
+              {t('matchDetail.playerNominations')}
             </h2>
             <button
               onClick={() => setShowNominations(!showNominations)}
               className="btn btn-secondary text-sm"
             >
-              {showNominations ? 'Hide' : 'Show'} Nominations
+              {showNominations ? t('matchDetail.hideNominations') : t('matchDetail.showNominations')}
             </button>
           </div>
 
@@ -351,7 +353,7 @@ export default function MatchDetail() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">
-                  {match.home_team_name} ({homePlayers?.length || 0} nominated)
+                  {match.home_team_name} ({homePlayers?.length || 0} {t('matchDetail.nominated')})
                 </h3>
                 {canNominateForTeam(match.home_team_id) ? (
                   <div className="space-y-2">
@@ -370,7 +372,7 @@ export default function MatchDetail() {
                                 : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
                             }`}
                           >
-                            {isPlayerNominated(player.id) ? '✓ Nominated' : 'Nominate'}
+                            {isPlayerNominated(player.id) ? `✓ ${t('matchDetail.nominated')}` : t('matchDetail.nominate')}
                           </button>
                         </div>
                       ))
@@ -408,7 +410,7 @@ export default function MatchDetail() {
                                 : 'bg-gray-300 text-gray-700 hover:bg-gray-400'
                             }`}
                           >
-                            {isPlayerNominated(player.id) ? '✓ Nominated' : 'Nominate'}
+                            {isPlayerNominated(player.id) ? `✓ ${t('matchDetail.nominated')}` : t('matchDetail.nominate')}
                           </button>
                         </div>
                       ))
@@ -438,7 +440,7 @@ export default function MatchDetail() {
               className="btn btn-secondary text-sm"
               disabled={!homePlayers || !awayPlayers}
             >
-              🎲 Auto-Generate Pairs
+              {t('matchDetail.autoGeneratePairs')}
             </button>
           )}
         </div>
@@ -450,7 +452,7 @@ export default function MatchDetail() {
             >
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-semibold text-gray-900 dark:text-white">
-                  Pair {pair.pair_number}
+                  {t('matchDetail.pairNumber', { number: pair.pair_number })}
                 </h3>
                 {canEditMatch && (
                   <>

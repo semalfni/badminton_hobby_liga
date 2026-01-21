@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 import { api } from '../api';
 import type { Team } from '../types';
 
 export default function Teams() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
@@ -64,16 +66,16 @@ export default function Teams() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8">{t('common.loading')}</div>;
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Teams</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('teams.title')}</h1>
         {!isAdding && isAdmin && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
-            + Add Team
+            + {t('teams.addTeam')}
           </button>
         )}
       </div>
@@ -81,12 +83,12 @@ export default function Teams() {
       {isAdding && (
         <div className="card mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            {editingId ? 'Edit Team' : 'Add New Team'}
+            {editingId ? t('teams.editTeam') : t('teams.addTeam')}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Team Name
+                {t('teams.teamName')}
               </label>
               <input
                 type="text"
@@ -100,7 +102,7 @@ export default function Teams() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Home Day
+                  {t('teams.homeDay')}
                 </label>
                 <select
                   required
@@ -120,7 +122,7 @@ export default function Teams() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Home Time
+                  {t('teams.homeTime')}
                 </label>
                 <input
                   type="text"
@@ -134,7 +136,7 @@ export default function Teams() {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Address
+                {t('teams.address')}
               </label>
               <input
                 type="text"
@@ -147,10 +149,10 @@ export default function Teams() {
             </div>
             <div className="flex gap-2">
               <button type="submit" className="btn btn-primary">
-                {editingId ? 'Update' : 'Create'}
+                {editingId ? t('common.update') : t('common.create')}
               </button>
               <button type="button" onClick={handleCancel} className="btn btn-secondary">
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </form>
@@ -173,18 +175,18 @@ export default function Teams() {
                       onClick={() => handleEdit(team)}
                       className="text-blue-600 hover:text-blue-700 text-sm"
                     >
-                      Edit
+                      {t('common.edit')}
                     </button>
                     {isAdmin && (
                       <button
                         onClick={() => {
-                          if (confirm('Are you sure you want to delete this team?')) {
+                          if (confirm(t('teams.confirmDelete'))) {
                             deleteMutation.mutate(team.id);
                           }
                         }}
                         className="text-red-600 hover:text-red-700 text-sm"
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     )}
                   </div>
@@ -192,13 +194,13 @@ export default function Teams() {
               </div>
               <div className="space-y-1 text-sm">
                 <p className="text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Home Day:</span> {team.home_day}
+                  <span className="font-medium">{t('teams.homeDay')}:</span> {team.home_day}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Time:</span> {team.home_time}
+                  <span className="font-medium">{t('teams.homeTime')}:</span> {team.home_time}
                 </p>
                 <p className="text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Address:</span> {team.address}
+                  <span className="font-medium">{t('teams.address')}:</span> {team.address}
                 </p>
               </div>
             </div>
@@ -208,7 +210,7 @@ export default function Teams() {
 
       {(!teams || teams.length === 0) && !isAdding && (
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-          No teams yet. Add your first team to get started!
+          {t('teams.addTeam')}
         </div>
       )}
     </div>
