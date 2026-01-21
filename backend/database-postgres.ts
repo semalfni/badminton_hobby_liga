@@ -29,20 +29,34 @@ const database = {
 
   // Authentication
   async login(username: string, password: string) {
+    console.log('=== LOGIN ATTEMPT ===');
+    console.log('Username:', username);
+    console.log('Password length:', password?.length);
+    
     const result = await sql`
       SELECT * FROM users WHERE username = ${username} LIMIT 1
     `;
     
+    console.log('Query result rows:', result.rows.length);
+    
     if (result.rows.length === 0) {
+      console.log('❌ User not found');
       throw new Error('Invalid credentials');
     }
     
     const user = result.rows[0];
+    console.log('User found:', user.username, 'Role:', user.role);
+    console.log('Stored hash starts with:', user.password?.substring(0, 10));
+    
     const validPassword = await bcrypt.compare(password, user.password);
+    console.log('Password validation result:', validPassword);
     
     if (!validPassword) {
+      console.log('❌ Invalid password');
       throw new Error('Invalid credentials');
     }
+    
+    console.log('✅ Login successful');
     
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role, team_id: user.team_id },
