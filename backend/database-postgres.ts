@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
-export const database = {
+const database = {
   // Initialize database with default admin user
   async initialize() {
     try {
@@ -565,4 +565,6 @@ export const database = {
   },
 };
 
+// Export both named and default for maximum compatibility
+export { database };
 export default database;
