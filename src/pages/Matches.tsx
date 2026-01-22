@@ -191,9 +191,11 @@ export default function Matches() {
       <div className="space-y-4">
         {matches?.map((match) => (
           <div key={match.id} className="card">
-            <div className="flex justify-between items-start">
+            {/* Mobile and Desktop Layout */}
+            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
               <div className="flex-1">
-                <div className="flex items-center gap-4 mb-2">
+                {/* Status Badge, Date, and Location */}
+                <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-3">
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded ${
                       match.completed
@@ -206,30 +208,43 @@ export default function Matches() {
                   <span className="text-sm text-gray-600 dark:text-gray-400">
                     {formatDate(match.match_date)}
                   </span>
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-600 dark:text-gray-400 break-all">
                     📍 {match.location}
                   </span>
                 </div>
-                <div className="flex items-center gap-4 text-lg">
-                  <span className="font-semibold text-gray-900 dark:text-white w-48">
-                    {match.home_team_name}
-                  </span>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {match.home_score}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400">-</span>
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {match.away_score}
-                  </span>
-                  <span className="font-semibold text-gray-900 dark:text-white w-48">
-                    {match.away_team_name}
-                  </span>
+                
+                {/* Team Names and Scores */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  {/* Home Team */}
+                  <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-3">
+                    <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base flex-1 sm:flex-none sm:w-32 md:w-48 truncate">
+                      {match.home_team_name}
+                    </span>
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                      {match.home_score}
+                    </span>
+                  </div>
+                  
+                  {/* Separator */}
+                  <span className="text-gray-500 dark:text-gray-400 hidden sm:inline">-</span>
+                  
+                  {/* Away Team */}
+                  <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-3">
+                    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white sm:order-first">
+                      {match.away_score}
+                    </span>
+                    <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base flex-1 sm:flex-none sm:w-32 md:w-48 truncate">
+                      {match.away_team_name}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-2">
+              
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => navigate(`/matches/${match.id}`)}
-                  className="btn btn-primary text-sm"
+                  className="btn btn-primary text-sm flex-1 sm:flex-none"
                 >
                   {t('matches.viewDetails')}
                 </button>
@@ -237,7 +252,7 @@ export default function Matches() {
                   <>
                     <button
                       onClick={() => toggleCompleteMutation.mutate({ id: match.id, match })}
-                      className="btn btn-secondary text-sm"
+                      className="btn btn-secondary text-sm flex-1 sm:flex-none whitespace-nowrap"
                     >
                       {match.completed ? t('matchDetail.reopenMatch') : t('matchDetail.markCompleted')}
                     </button>
@@ -247,7 +262,7 @@ export default function Matches() {
                           deleteMutation.mutate(match.id);
                         }
                       }}
-                      className="text-red-600 hover:text-red-700 text-sm px-2"
+                      className="text-red-600 hover:text-red-700 text-sm px-3 py-2 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       {t('common.delete')}
                     </button>
