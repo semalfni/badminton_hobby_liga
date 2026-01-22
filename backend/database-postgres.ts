@@ -381,14 +381,15 @@ const database = {
         lost: losses,
         games_won: pairsWon,
         games_lost: pairsLost,
+        pairs_diff: pairsDiff,
         match_points: matchPoints, // Points from match wins
         points: pairsWon, // Total points from all games won
       };
     }).sort((a: any, b: any) => {
-      // Sort by total game points first, then by match points
+      // Sort by total game points first, then by match points, then by pairs diff
       if (b.points !== a.points) return b.points - a.points;
       if (b.match_points !== a.match_points) return b.match_points - a.match_points;
-      return pairsDiff;
+      return b.pairs_diff - a.pairs_diff;
     });
   },
 

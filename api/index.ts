@@ -240,8 +240,9 @@ app.get('/api/standings', async (req, res) => {
   try {
     const standings = await database.getStandings();
     res.json(standings);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch standings' });
+  } catch (error: any) {
+    console.error('Error fetching standings:', error);
+    res.status(500).json({ error: 'Failed to fetch standings', details: error.message });
   }
 });
 
