@@ -338,7 +338,8 @@ const database = {
 
   // Standings
   async getStandings() {
-    const teams = await this.getTeams();
+    const teamsResult = await sql`SELECT * FROM teams ORDER BY name`;
+    const teams = teamsResult.rows;
     const matches = await sql`SELECT * FROM matches WHERE completed = true`;
     
     return teams.map((team: any) => {
