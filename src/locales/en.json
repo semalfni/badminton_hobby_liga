@@ -70,7 +70,10 @@
     "selectTeam": "Select Team",
     "team": "Team",
     "confirmDelete": "Are you sure you want to delete this player?",
-    "allTeams": "All Teams"
+    "allTeams": "All Teams",
+    "noPlayers": "No players in this team yet.",
+    "expandAll": "Expand All",
+    "collapseAll": "Collapse All"
   },
   "matches": {
     "title": "Matches",

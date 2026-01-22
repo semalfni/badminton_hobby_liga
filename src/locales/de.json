@@ -70,7 +70,10 @@
     "selectTeam": "Team auswählen",
     "team": "Team",
     "confirmDelete": "Möchten Sie diesen Spieler wirklich löschen?",
-    "allTeams": "Alle Teams"
+    "allTeams": "Alle Teams",
+    "noPlayers": "Noch keine Spieler in diesem Team.",
+    "expandAll": "Alle ausklappen",
+    "collapseAll": "Alle einklappen"
   },
   "matches": {
     "title": "Spiele",
