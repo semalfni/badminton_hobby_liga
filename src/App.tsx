@@ -128,7 +128,11 @@ function App() {
               <div className="text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">{user?.username}</span>
                 <span className="ml-2 px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">
-                  {user?.role === 'admin' ? t('common.admin') : t('common.teamManager')}
+                  {user?.role === 'admin' 
+                    ? t('common.admin') 
+                    : user?.role === 'observer' 
+                    ? t('common.observer') 
+                    : t('common.teamManager')}
                 </span>
               </div>
               <button
@@ -239,7 +243,11 @@ function App() {
                     <div className="font-medium">{user?.username}</div>
                     <div className="mt-1">
                       <span className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">
-                        {user?.role === 'admin' ? t('common.admin') : t('common.teamManager')}
+                        {user?.role === 'admin' 
+                          ? t('common.admin') 
+                          : user?.role === 'observer' 
+                          ? t('common.observer') 
+                          : t('common.teamManager')}
                       </span>
                     </div>
                   </div>
