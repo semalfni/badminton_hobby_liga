@@ -24,14 +24,35 @@ export default function Standings() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">Pos</th>
+              <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">Pos</span>
+                <span className="hidden md:inline">Position</span>
+              </th>
               <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">{t('standings.team')}</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">{t('standings.played')}</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">{t('standings.wins')}</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">{t('standings.losses')}</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">G+</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">G-</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">{t('standings.pairsDiff')}</th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                <span className="md:hidden">{t('standings.played')}</span>
+                <span className="hidden md:inline">{t('standings.playedFull') || 'Played'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">{t('standings.wins')}</span>
+                <span className="hidden md:inline">{t('standings.winsFull') || 'Wins'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">{t('standings.losses')}</span>
+                <span className="hidden md:inline">{t('standings.lossesFull') || 'Losses'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                <span className="md:hidden">G+</span>
+                <span className="hidden md:inline">{t('standings.gamesWonFull') || 'Games Won'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                <span className="md:hidden">G-</span>
+                <span className="hidden md:inline">{t('standings.gamesLostFull') || 'Games Lost'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">
+                <span className="md:hidden">{t('standings.pairsDiff')}</span>
+                <span className="hidden md:inline">{t('standings.pairsDiffFull') || 'Difference'}</span>
+              </th>
               <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-bold">{t('standings.points')}</th>
             </tr>
           </thead>

@@ -40,12 +40,18 @@
     "title": "League Standings",
     "team": "Team",
     "played": "P",
+    "playedFull": "Played",
     "wins": "W",
+    "winsFull": "Wins",
     "draws": "D",
     "losses": "L",
+    "lossesFull": "Losses",
     "pairsWon": "Pairs Won",
     "pairsLost": "Pairs Lost",
     "pairsDiff": "Diff",
+    "pairsDiffFull": "Difference",
+    "gamesWonFull": "Games Won",
+    "gamesLostFull": "Games Lost",
     "points": "Points"
   },
   "teams": {

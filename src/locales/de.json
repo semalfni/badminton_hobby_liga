@@ -40,12 +40,18 @@
     "title": "Ligatabelle",
     "team": "Team",
     "played": "Sp",
+    "playedFull": "Gespielt",
     "wins": "S",
+    "winsFull": "Siege",
     "draws": "U",
     "losses": "N",
+    "lossesFull": "Niederlagen",
     "pairsWon": "Paare +",
     "pairsLost": "Paare -",
     "pairsDiff": "Diff",
+    "pairsDiffFull": "Differenz",
+    "gamesWonFull": "Spiele gewonnen",
+    "gamesLostFull": "Spiele verloren",
     "points": "Punkte"
   },
   "teams": {
