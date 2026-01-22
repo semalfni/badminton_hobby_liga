@@ -70,16 +70,22 @@
   "players": {
     "title": "Spieler",
     "addPlayer": "Spieler hinzufügen",
+    "addMultiple": "Mehrere hinzufügen",
     "editPlayer": "Spieler bearbeiten",
     "deletePlayer": "Spieler löschen",
     "playerName": "Spielername",
+    "playerNames": "Spielernamen (einer pro Zeile)",
     "selectTeam": "Team auswählen",
     "team": "Team",
     "confirmDelete": "Möchten Sie diesen Spieler wirklich löschen?",
     "allTeams": "Alle Teams",
     "noPlayers": "Noch keine Spieler in diesem Team.",
     "expandAll": "Alle ausklappen",
-    "collapseAll": "Alle einklappen"
+    "collapseAll": "Alle einklappen",
+    "multipleNamesPlaceholder": "Max Mustermann\nErika Musterfrau\nHans Schmidt\n...",
+    "multipleNamesHint": "Geben Sie einen Spielernamen pro Zeile ein",
+    "createAll": "Alle erstellen",
+    "enterAtLeastOneName": "Bitte geben Sie mindestens einen Spielernamen ein"
   },
   "matches": {
     "title": "Spiele",

@@ -10,8 +10,10 @@ export default function Players() {
   const queryClient = useQueryClient();
   const { user, isAdmin, canEdit } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
+  const [isAddingMultiple, setIsAddingMultiple] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({ name: '', team_id: 0 });
+  const [multiplePlayersData, setMultiplePlayersData] = useState({ names: '', team_id: 0 });
   const [expandedTeams, setExpandedTeams] = useState<Set<number>>(new Set());
 
   const { data: teams } = useQuery<Team[]>({
@@ -67,8 +69,35 @@ export default function Players() {
 
   const handleCancel = () => {
     setIsAdding(false);
+    setIsAddingMultiple(false);
     setEditingId(null);
     setFormData({ name: '', team_id: 0 });
+    setMultiplePlayersData({ names: '', team_id: 0 });
+  };
+
+  const handleMultipleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const names = multiplePlayersData.names
+      .split('\n')
+      .map(name => name.trim())
+      .filter(name => name.length > 0);
+    
+    if (names.length === 0) {
+      alert(t('players.enterAtLeastOneName') || 'Please enter at least one player name');
+      return;
+    }
+
+    try {
+      // Create all players sequentially
+      for (const name of names) {
+        await createMutation.mutateAsync({ team_id: multiplePlayersData.team_id, name });
+      }
+      queryClient.invalidateQueries({ queryKey: ['players'] });
+      setIsAddingMultiple(false);
+      setMultiplePlayersData({ names: '', team_id: 0 });
+    } catch (error) {
+      console.error('Error creating players:', error);
+    }
   };
 
   const toggleTeam = (teamId: number) => {
@@ -110,10 +139,15 @@ export default function Players() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('players.title')}</h1>
         <div className="flex gap-2">
-          {!isAdding && canEdit && (
-            <button onClick={() => setIsAdding(true)} className="btn btn-primary">
-              + {t('players.addPlayer')}
-            </button>
+          {!isAdding && !isAddingMultiple && canEdit && (
+            <>
+              <button onClick={() => setIsAdding(true)} className="btn btn-primary">
+                + {t('players.addPlayer')}
+              </button>
+              <button onClick={() => setIsAddingMultiple(true)} className="btn btn-secondary">
+                + {t('players.addMultiple') || 'Add Multiple'}
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -177,6 +211,59 @@ export default function Players() {
             <div className="flex gap-2">
               <button type="submit" className="btn btn-primary">
                 {editingId ? t('common.update') : t('common.create')}
+              </button>
+              <button type="button" onClick={handleCancel} className="btn btn-secondary">
+                {t('common.cancel')}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {isAddingMultiple && (
+        <div className="card mb-6">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+            {t('players.addMultiple') || 'Add Multiple Players'}
+          </h2>
+          <form onSubmit={handleMultipleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('players.team')}
+              </label>
+              <select
+                required
+                value={multiplePlayersData.team_id}
+                onChange={(e) => setMultiplePlayersData({ ...multiplePlayersData, team_id: Number(e.target.value) })}
+                className="input"
+              >
+                <option value={0}>{t('players.selectTeam')}</option>
+                {teams
+                  ?.filter(team => isAdmin || user?.team_id === team.id)
+                  .map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {t('players.playerNames') || 'Player Names (one per line)'}
+              </label>
+              <textarea
+                required
+                value={multiplePlayersData.names}
+                onChange={(e) => setMultiplePlayersData({ ...multiplePlayersData, names: e.target.value })}
+                className="input min-h-[150px]"
+                placeholder={t('players.multipleNamesPlaceholder') || 'John Doe\nJane Smith\nBob Johnson\n...'}
+              />
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {t('players.multipleNamesHint') || 'Enter one player name per line'}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button type="submit" className="btn btn-primary">
+                {t('players.createAll') || 'Create All'}
               </button>
               <button type="button" onClick={handleCancel} className="btn btn-secondary">
                 {t('common.cancel')}
