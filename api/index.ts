@@ -4,11 +4,6 @@ import { authenticateToken, requireRole } from '../backend/auth.js';
 import type { AuthRequest } from '../backend/auth.js';
 import database from '../backend/database-postgres.js';
 
-// Initialize database
-if (database.initialize) {
-  await database.initialize();
-}
-
 const app = express();
 
 app.use(cors());
