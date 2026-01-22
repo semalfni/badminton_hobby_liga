@@ -99,7 +99,7 @@ export default function Players() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('players.title')}</h1>
-        {!isAdding && (
+        {!isAdding && canEdit && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
             + {t('players.addPlayer')}
           </button>
