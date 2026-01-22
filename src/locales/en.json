@@ -50,9 +50,13 @@
     "pairsLost": "Pairs Lost",
     "pairsDiff": "Diff",
     "pairsDiffFull": "Difference",
+    "gamesPlayed": "GP",
+    "gamesPlayedFull": "Games Played",
+    "gamesWon": "GW",
     "gamesWonFull": "Games Won",
     "gamesLostFull": "Games Lost",
-    "points": "Points"
+    "points": "Pts",
+    "pointsFormat": "Points (Won - Lost)"
   },
   "teams": {
     "title": "Teams",

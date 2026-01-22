@@ -29,38 +29,25 @@ export default function Standings() {
                 <span className="hidden md:inline">Position</span>
               </th>
               <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">{t('standings.team')}</th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                <span className="md:hidden">{t('standings.played')}</span>
-                <span className="hidden md:inline">{t('standings.playedFull') || 'Played'}</span>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">{t('standings.gamesPlayed') || 'GP'}</span>
+                <span className="hidden md:inline">{t('standings.gamesPlayedFull') || 'Games Played'}</span>
               </th>
               <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
-                <span className="md:hidden">{t('standings.wins')}</span>
-                <span className="hidden md:inline">{t('standings.winsFull') || 'Wins'}</span>
-              </th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
-                <span className="md:hidden">{t('standings.losses')}</span>
-                <span className="hidden md:inline">{t('standings.lossesFull') || 'Losses'}</span>
-              </th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">
-                <span className="md:hidden">G+</span>
+                <span className="md:hidden">{t('standings.gamesWon') || 'GW'}</span>
                 <span className="hidden md:inline">{t('standings.gamesWonFull') || 'Games Won'}</span>
               </th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden md:table-cell">
-                <span className="md:hidden">G-</span>
-                <span className="hidden md:inline">{t('standings.gamesLostFull') || 'Games Lost'}</span>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-bold">
+                <span className="md:hidden">{t('standings.points') || 'Pts'}</span>
+                <span className="hidden md:inline">{t('standings.pointsFormat') || 'Points'}</span>
               </th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                <span className="md:hidden">{t('standings.pairsDiff')}</span>
-                <span className="hidden md:inline">{t('standings.pairsDiffFull') || 'Difference'}</span>
-              </th>
-              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-bold">{t('standings.points')}</th>
             </tr>
           </thead>
           <tbody>
             {standings?.map((standing, index) => {
               const gamesWon = standing.games_won || 0;
               const gamesLost = standing.games_lost || 0;
-              const diff = gamesWon - gamesLost;
+              const gamesPlayed = gamesWon + gamesLost;
               
               return (
                 <tr
@@ -73,26 +60,14 @@ export default function Standings() {
                   <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
                     {standing.team_name}
                   </td>
-                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                    {standing.played || 0}
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300">
+                    {gamesPlayed}
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-green-600 dark:text-green-400">
-                    {standing.won || 0}
-                  </td>
-                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-red-600 dark:text-red-400">
-                    {standing.lost || 0}
-                  </td>
-                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
                     {gamesWon}
                   </td>
-                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden md:table-cell">
-                    {gamesLost}
-                  </td>
-                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300 hidden sm:table-cell">
-                    {diff > 0 ? '+' : ''}{diff}
-                  </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-900 dark:text-white font-bold">
-                    {standing.points || 0}
+                    {gamesWon} - {gamesLost}
                   </td>
                 </tr>
               );

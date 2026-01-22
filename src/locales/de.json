@@ -50,9 +50,13 @@
     "pairsLost": "Paare -",
     "pairsDiff": "Diff",
     "pairsDiffFull": "Differenz",
+    "gamesPlayed": "GSp",
+    "gamesPlayedFull": "Spiele gespielt",
+    "gamesWon": "SG",
     "gamesWonFull": "Spiele gewonnen",
     "gamesLostFull": "Spiele verloren",
-    "points": "Punkte"
+    "points": "Pkt",
+    "pointsFormat": "Punkte (Gewonnen - Verloren)"
   },
   "teams": {
     "title": "Teams",
