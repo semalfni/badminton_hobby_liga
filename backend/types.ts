@@ -11,7 +11,7 @@ export interface User {
   id: number;
   username: string;
   password: string;
-  role: 'admin' | 'team_manager' | 'observer';
+  role: 'admin' | 'league_manager' | 'team_manager' | 'observer';
   team_id: number | null;
   created_at: string;
 }

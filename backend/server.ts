@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import database from './database-postgres.js';
-import { authenticateToken, requireRole, requireCanEdit, AuthRequest } from './auth.js';
+import { authenticateToken, requireRole, requireCanEdit, requireCanDelete, AuthRequest } from './auth.js';
 
 const app = express();
 const PORT = 3001;
@@ -235,7 +235,7 @@ app.put('/api/matches/:id', authenticateToken, requireCanEdit, async (req: AuthR
   }
 });
 
-app.delete('/api/matches/:id', authenticateToken, requireRole('admin'), async (req, res) => {
+app.delete('/api/matches/:id', authenticateToken, requireCanDelete, async (req, res) => {
   try {
     await database.deleteMatch(Number(req.params.id));
     res.status(204).send();

@@ -130,6 +130,8 @@ function App() {
                 <span className="ml-2 px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">
                   {user?.role === 'admin' 
                     ? t('common.admin') 
+                    : user?.role === 'league_manager'
+                    ? t('common.leagueManager')
                     : user?.role === 'observer' 
                     ? t('common.observer') 
                     : t('common.teamManager')}
@@ -245,6 +247,8 @@ function App() {
                       <span className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-700">
                         {user?.role === 'admin' 
                           ? t('common.admin') 
+                          : user?.role === 'league_manager'
+                          ? t('common.leagueManager')
                           : user?.role === 'observer' 
                           ? t('common.observer') 
                           : t('common.teamManager')}

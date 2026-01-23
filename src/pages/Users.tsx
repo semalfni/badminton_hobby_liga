@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../AuthContext';
 import { api } from '../api';
 import type { User, Team } from '../types';
 
 export default function Users() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const { canManageUsers } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-    role: 'team_manager' as 'admin' | 'team_manager' | 'observer',
+    role: 'team_manager' as 'admin' | 'league_manager' | 'team_manager' | 'observer',
     team_id: null as number | null,
   });
 
@@ -98,14 +100,22 @@ export default function Users() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{t('users.title')}</h1>
-        {!isAdding && (
+        {!isAdding && canManageUsers && (
           <button onClick={() => setIsAdding(true)} className="btn btn-primary">
             + {t('users.addUser')}
           </button>
         )}
       </div>
 
-      {isAdding && (
+      {!canManageUsers && (
+        <div className="card mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+          <p className="text-yellow-800 dark:text-yellow-200">
+            {t('users.readOnlyAccess')}
+          </p>
+        </div>
+      )}
+
+      {isAdding && canManageUsers && (
         <div className="card mb-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
             {editingId ? t('users.editUser') : t('users.addUser')}
@@ -145,11 +155,12 @@ export default function Users() {
                 required
                 value={formData.role}
                 onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value as 'admin' | 'team_manager' | 'observer' })
+                  setFormData({ ...formData, role: e.target.value as 'admin' | 'league_manager' | 'team_manager' | 'observer' })
                 }
                 className="input"
               >
                 <option value="team_manager">{t('users.teamManager')}</option>
+                <option value="league_manager">{t('users.leagueManager')}</option>
                 <option value="admin">{t('users.admin')}</option>
                 <option value="observer">{t('users.observer')}</option>
               </select>
@@ -210,34 +221,46 @@ export default function Users() {
                     className={`px-2 py-1 text-xs font-medium rounded ${
                       user.role === 'admin'
                         ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300'
+                        : user.role === 'league_manager'
+                        ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300'
                         : user.role === 'observer'
                         ? 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
                         : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
                     }`}
                   >
-                    {user.role === 'admin' ? t('users.admin') : user.role === 'observer' ? t('users.observer') : t('users.teamManager')}
+                    {user.role === 'admin' 
+                      ? t('users.admin') 
+                      : user.role === 'league_manager' 
+                      ? t('users.leagueManager') 
+                      : user.role === 'observer' 
+                      ? t('users.observer') 
+                      : t('users.teamManager')}
                   </span>
                 </td>
                 <td className="py-3 px-4 text-gray-700 dark:text-gray-300">
                   {getTeamName(user.team_id)}
                 </td>
                 <td className="py-3 px-4 text-right">
-                  <button
-                    onClick={() => handleEdit(user)}
-                    className="text-blue-600 hover:text-blue-700 text-sm mr-3"
-                  >
-                    {t('common.edit')}
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(t('users.confirmDelete'))) {
-                        deleteMutation.mutate(user.id);
-                      }
-                    }}
-                    className="text-red-600 hover:text-red-700 text-sm"
-                  >
-                    {t('common.delete')}
-                  </button>
+                  {canManageUsers && (
+                    <>
+                      <button
+                        onClick={() => handleEdit(user)}
+                        className="text-blue-600 hover:text-blue-700 text-sm mr-3"
+                      >
+                        {t('common.edit')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(t('users.confirmDelete'))) {
+                            deleteMutation.mutate(user.id);
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm"
+                      >
+                        {t('common.delete')}
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

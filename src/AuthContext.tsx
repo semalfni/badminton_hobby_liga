@@ -8,9 +8,11 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isLeagueManager: boolean;
   isTeamManager: boolean;
   isObserver: boolean;
   canEdit: boolean;
+  canManageUsers: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -65,9 +67,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
+        isLeagueManager: user?.role === 'league_manager',
         isTeamManager: user?.role === 'team_manager',
         isObserver: user?.role === 'observer',
-        canEdit: user?.role === 'admin' || user?.role === 'team_manager',
+        canEdit: user?.role === 'admin' || user?.role === 'league_manager' || user?.role === 'team_manager',
+        canManageUsers: user?.role === 'admin',
       }}
     >
       {children}

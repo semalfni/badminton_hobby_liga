@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { authenticateToken, requireRole, requireCanEdit } from '../backend/auth.js';
+import { authenticateToken, requireRole, requireCanEdit, requireCanDelete } from '../backend/auth.js';
 import type { AuthRequest } from '../backend/auth.js';
 import database from '../backend/database-postgres.js';
 
@@ -192,7 +192,7 @@ app.put('/api/matches/:id', authenticateToken, async (req: AuthRequest, res) => 
   }
 });
 
-app.delete('/api/matches/:id', authenticateToken, requireRole('admin'), async (req, res) => {
+app.delete('/api/matches/:id', authenticateToken, requireCanDelete, async (req, res) => {
   try {
     await database.deleteMatch(Number(req.params.id));
     res.json({ success: true });

@@ -7,7 +7,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: number;
     username: string;
-    role: 'admin' | 'team_manager' | 'observer';
+    role: 'admin' | 'league_manager' | 'team_manager' | 'observer';
     team_id: number | null;
   };
 }
@@ -64,8 +64,8 @@ export function requireTeamAccess(req: AuthRequest, res: Response, next: NextFun
     return res.status(401).json({ error: 'Not authenticated' });
   }
 
-  // Admins have access to all teams
-  if (req.user.role === 'admin') {
+  // Admins and league_managers have access to all teams
+  if (req.user.role === 'admin' || req.user.role === 'league_manager') {
     return next();
   }
 
@@ -89,3 +89,16 @@ export function requireCanEdit(req: AuthRequest, res: Response, next: NextFuncti
 
   next();
 }
+
+export function requireCanDelete(req: AuthRequest, res: Response, next: NextFunction) {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Not authenticated' });
+  }
+
+  if (req.user.role === 'admin' || req.user.role === 'league_manager') {
+    return next();
+  }
+
+  return res.status(403).json({ error: 'Insufficient permissions to delete' });
+}
+

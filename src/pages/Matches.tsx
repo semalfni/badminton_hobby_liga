@@ -10,7 +10,7 @@ export default function Matches() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isAdmin, canEdit } = useAuth();
+  const { user, isAdmin, isLeagueManager, canEdit } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
     home_team_id: 0,
@@ -283,16 +283,18 @@ export default function Matches() {
                     >
                       {match.completed ? t('matchDetail.reopenMatch') : t('matchDetail.markCompleted')}
                     </button>
-                    <button
-                      onClick={() => {
-                        if (confirm(t('matches.confirmDelete'))) {
-                          deleteMutation.mutate(match.id);
-                        }
-                      }}
-                      className="text-red-600 hover:text-red-700 text-sm px-3 py-2 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
-                    >
-                      {t('common.delete')}
-                    </button>
+                    {(isAdmin || isLeagueManager) && (
+                      <button
+                        onClick={() => {
+                          if (confirm(t('matches.confirmDelete'))) {
+                            deleteMutation.mutate(match.id);
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-700 text-sm px-3 py-2 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        {t('common.delete')}
+                      </button>
+                    )}
                   </>
                 )}
               </div>
