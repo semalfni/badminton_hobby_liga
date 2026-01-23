@@ -28,38 +28,42 @@ function Statistics() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t('statistics.title')}</h1>
+      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4 md:mb-6">{t('statistics.title')}</h1>
 
       <div className="card">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-xs md:text-sm">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   {t('statistics.rank')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   {t('statistics.player')}
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-2 md:px-6 py-2 md:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell">
                   {t('statistics.team')}
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  {t('statistics.gamesPlayed')}
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">
+                  <span className="hidden lg:inline">{t('statistics.gamesPlayed')}</span>
+                  <span className="lg:hidden">GP</span>
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  {t('statistics.gamesWon')}
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell">
+                  <span className="hidden lg:inline">{t('statistics.gamesWon')}</span>
+                  <span className="lg:hidden">GW</span>
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   {t('statistics.sets')}
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  {t('statistics.winRate')}
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <span className="hidden sm:inline">{t('statistics.winRate')}</span>
+                  <span className="sm:hidden">WR%</span>
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  {t('statistics.totalPoints')}
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <span className="hidden sm:inline">{t('statistics.totalPoints')}</span>
+                  <span className="sm:hidden">Pts</span>
                 </th>
-                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                <th className="px-2 md:px-4 py-2 md:py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell">
                   {t('statistics.avgPoints')}
                 </th>
               </tr>
@@ -73,53 +77,56 @@ function Statistics() {
                 
                 return (
                   <tr key={stat.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {index === 0 && <span className="text-2xl mr-2">🥇</span>}
-                        {index === 1 && <span className="text-2xl mr-2">🥈</span>}
-                        {index === 2 && <span className="text-2xl mr-2">🥉</span>}
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                        {index === 0 && <span className="text-lg md:text-2xl mr-1 md:mr-2">🥇</span>}
+                        {index === 1 && <span className="text-lg md:text-2xl mr-1 md:mr-2">🥈</span>}
+                        {index === 2 && <span className="text-lg md:text-2xl mr-1 md:mr-2">🥉</span>}
+                        <span className="text-xs md:text-sm font-medium text-gray-900 dark:text-white">
                           #{index + 1}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    <td className="px-2 md:px-6 py-2 md:py-4">
+                      <div className="text-xs md:text-sm font-medium text-gray-900 dark:text-white">
                         {stat.name}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 sm:hidden">
                         {stat.team_name}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                    <td className="px-2 md:px-6 py-2 md:py-4 whitespace-nowrap hidden sm:table-cell">
+                      <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                        {stat.team_name}
+                      </div>
+                    </td>
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center hidden md:table-cell">
+                      <div className="text-xs md:text-sm text-gray-900 dark:text-white">
                         {stat.games_played}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-green-600 dark:text-green-400 font-medium">
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center hidden md:table-cell">
+                      <div className="text-xs md:text-sm text-green-600 dark:text-green-400 font-medium">
                         {stat.games_won}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center">
+                      <div className="text-xs md:text-sm text-gray-900 dark:text-white">
                         {stat.sets_won} - {stat.sets_lost}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center">
+                      <div className="text-xs md:text-sm text-gray-900 dark:text-white">
                         {winRate}%
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center">
+                      <div className="text-xs md:text-sm font-bold text-blue-600 dark:text-blue-400">
                         {stat.total_points}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-gray-900 dark:text-white">
+                    <td className="px-2 md:px-4 py-2 md:py-4 whitespace-nowrap text-center hidden lg:table-cell">
+                      <div className="text-xs md:text-sm text-gray-900 dark:text-white">
                         {stat.avg_points}
                       </div>
                     </td>
@@ -137,24 +144,24 @@ function Statistics() {
         </div>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
         <div className="card bg-blue-50 dark:bg-blue-900/20">
-          <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
+          <h3 className="text-base md:text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
             {t('statistics.mostPoints')}
           </h3>
-          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">
             {statistics?.[0]?.name || 'N/A'}
           </div>
-          <div className="text-sm text-blue-700 dark:text-blue-500">
+          <div className="text-xs md:text-sm text-blue-700 dark:text-blue-500">
             {statistics?.[0]?.total_points || 0} {t('statistics.points')}
           </div>
         </div>
 
         <div className="card bg-green-50 dark:bg-green-900/20">
-          <h3 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-2">
+          <h3 className="text-base md:text-lg font-semibold text-green-900 dark:text-green-300 mb-2">
             {t('statistics.bestWinRate')}
           </h3>
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+          <div className="text-xl md:text-2xl font-bold text-green-600 dark:text-green-400 truncate">
             {statistics && statistics.length > 0 
               ? [...statistics]
                   .filter(s => (s.sets_won + s.sets_lost) >= 6) // Minimum 6 sets played
@@ -166,7 +173,7 @@ function Statistics() {
               : 'N/A'
             }
           </div>
-          <div className="text-sm text-green-700 dark:text-green-500">
+          <div className="text-xs md:text-sm text-green-700 dark:text-green-500">
             {statistics && statistics.length > 0 
               ? (() => {
                   const topPlayer = [...statistics]
@@ -186,16 +193,16 @@ function Statistics() {
         </div>
 
         <div className="card bg-purple-50 dark:bg-purple-900/20">
-          <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-300 mb-2">
+          <h3 className="text-base md:text-lg font-semibold text-purple-900 dark:text-purple-300 mb-2">
             {t('statistics.mostActive')}
           </h3>
-          <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+          <div className="text-xl md:text-2xl font-bold text-purple-600 dark:text-purple-400 truncate">
             {statistics && statistics.length > 0 
               ? [...statistics].sort((a, b) => b.games_played - a.games_played)[0]?.name || 'N/A'
               : 'N/A'
             }
           </div>
-          <div className="text-sm text-purple-700 dark:text-purple-500">
+          <div className="text-xs md:text-sm text-purple-700 dark:text-purple-500">
             {statistics && statistics.length > 0 
               ? `${[...statistics].sort((a, b) => b.games_played - a.games_played)[0]?.games_played || 0} ${t('statistics.games')}`
               : `0 ${t('statistics.games')}`
