@@ -355,12 +355,18 @@ const database = {
       : { rows: [] };
     
     return teams.map((team: any) => {
+      let matchesPlayed = 0;
       let gamesPlayed = 0;
       let gamesWon = 0;
       let setsWon = 0;
       let setsLost = 0;
       let pointsWon = 0;
       let pointsLost = 0;
+      
+      // Count matches played by this team
+      matchesPlayed = completedMatches.rows.filter((m: any) => 
+        m.home_team_id === team.id || m.away_team_id === team.id
+      ).length;
       
       // Process each game (match_pair)
       for (const pair of pairsResult.rows) {
@@ -463,6 +469,7 @@ const database = {
       return {
         team_id: team.id,
         team_name: team.name,
+        matches_played: matchesPlayed,
         games_played: gamesPlayed,
         games_won: gamesWon,
         sets_won: setsWon,

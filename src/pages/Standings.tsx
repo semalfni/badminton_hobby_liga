@@ -30,6 +30,10 @@ export default function Standings() {
               </th>
               <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">{t('standings.team')}</th>
               <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">{t('standings.matchesPlayed') || 'MP'}</span>
+                <span className="hidden md:inline">{t('standings.matchesPlayedFull') || 'Matches Played'}</span>
+              </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
                 <span className="md:hidden">{t('standings.gamesPlayed') || 'GP'}</span>
                 <span className="hidden md:inline">{t('standings.gamesPlayedFull') || 'Games Played'}</span>
               </th>
@@ -59,6 +63,9 @@ export default function Standings() {
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-gray-900 dark:text-white font-medium">
                     {standing.team_name}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300">
+                    {standing.matches_played || 0}
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300">
                     {standing.games_played || 0}
