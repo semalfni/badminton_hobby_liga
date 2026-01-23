@@ -152,7 +152,40 @@ const database = {
       LEFT JOIN players mvp ON m.mvp_player_id = mvp.id
       ORDER BY m.match_date DESC
     `;
-    return result.rows;
+    
+    // For each match, calculate total sets won
+    const matchesWithSets = await Promise.all(
+      result.rows.map(async (match: any) => {
+        const pairsResult = await sql`
+          SELECT * FROM match_pairs WHERE match_id = ${match.id}
+        `;
+        
+        let homeSetsWon = 0;
+        let awaySetsWon = 0;
+        
+        for (const pair of pairsResult.rows) {
+          // Set 1
+          if (pair.game1_home_score > pair.game1_away_score) homeSetsWon++;
+          else if (pair.game1_away_score > pair.game1_home_score) awaySetsWon++;
+          
+          // Set 2
+          if (pair.game2_home_score > pair.game2_away_score) homeSetsWon++;
+          else if (pair.game2_away_score > pair.game2_home_score) awaySetsWon++;
+          
+          // Set 3
+          if (pair.game3_home_score > pair.game3_away_score) homeSetsWon++;
+          else if (pair.game3_away_score > pair.game3_home_score) awaySetsWon++;
+        }
+        
+        return {
+          ...match,
+          home_sets: homeSetsWon,
+          away_sets: awaySetsWon,
+        };
+      })
+    );
+    
+    return matchesWithSets;
   },
 
   async getMatchById(id: number) {

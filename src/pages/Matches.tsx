@@ -220,9 +220,16 @@ export default function Matches() {
                     <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base flex-1 sm:flex-none sm:w-32 md:w-48 truncate">
                       {match.home_team_name}
                     </span>
-                    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
-                      {match.home_score}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                        {match.home_score}
+                      </span>
+                      {match.home_sets !== undefined && (
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          ({match.home_sets})
+                        </span>
+                      )}
+                    </div>
                   </div>
                   
                   {/* Separator */}
@@ -230,9 +237,16 @@ export default function Matches() {
                   
                   {/* Away Team */}
                   <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-3">
-                    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white sm:order-first">
-                      {match.away_score}
-                    </span>
+                    <div className="flex items-center gap-2 sm:order-first">
+                      <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+                        {match.away_score}
+                      </span>
+                      {match.away_sets !== undefined && (
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                          ({match.away_sets})
+                        </span>
+                      )}
+                    </div>
                     <span className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base flex-1 sm:flex-none sm:w-32 md:w-48 truncate">
                       {match.away_team_name}
                     </span>

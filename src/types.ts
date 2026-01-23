@@ -30,6 +30,8 @@ export interface Match {
   location: string;
   home_score: number;
   away_score: number;
+  home_sets?: number;
+  away_sets?: number;
   completed: boolean;
   mvp_player_id?: number | null;
   mvp_player_name?: string | null;

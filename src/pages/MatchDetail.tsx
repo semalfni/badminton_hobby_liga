@@ -276,16 +276,28 @@ export default function MatchDetail() {
   const calculateTotalPoints = () => {
     let homeTotalPoints = 0;
     let awayTotalPoints = 0;
+    let homeSetsWon = 0;
+    let awaySetsWon = 0;
     
     match.pairs?.forEach((pair) => {
       homeTotalPoints += (pair.game1_home_score || 0) + (pair.game2_home_score || 0) + (pair.game3_home_score || 0);
       awayTotalPoints += (pair.game1_away_score || 0) + (pair.game2_away_score || 0) + (pair.game3_away_score || 0);
+      
+      // Count sets won
+      if (pair.game1_home_score > pair.game1_away_score) homeSetsWon++;
+      else if (pair.game1_away_score > pair.game1_home_score) awaySetsWon++;
+      
+      if (pair.game2_home_score > pair.game2_away_score) homeSetsWon++;
+      else if (pair.game2_away_score > pair.game2_home_score) awaySetsWon++;
+      
+      if (pair.game3_home_score > pair.game3_away_score) homeSetsWon++;
+      else if (pair.game3_away_score > pair.game3_home_score) awaySetsWon++;
     });
     
-    return { homeTotalPoints, awayTotalPoints };
+    return { homeTotalPoints, awayTotalPoints, homeSetsWon, awaySetsWon };
   };
   
-  const { homeTotalPoints, awayTotalPoints } = calculateTotalPoints();
+  const { homeTotalPoints, awayTotalPoints, homeSetsWon, awaySetsWon } = calculateTotalPoints();
 
   return (
     <div>
@@ -321,7 +333,10 @@ export default function MatchDetail() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               {match.home_team_name}
             </div>
-            <div className="text-5xl font-bold text-blue-600">{match.home_score}</div>
+            <div className="flex items-center justify-center gap-3">
+              <div className="text-5xl font-bold text-blue-600">{match.home_score}</div>
+              <div className="text-2xl font-semibold text-gray-500 dark:text-gray-400">({homeSetsWon})</div>
+            </div>
             <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({t('matchDetail.totalPoints', { count: homeTotalPoints })})</div>
           </div>
           <div className="text-3xl font-bold text-gray-400">{t('matches.vs').toUpperCase()}</div>
@@ -329,7 +344,10 @@ export default function MatchDetail() {
             <div className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
               {match.away_team_name}
             </div>
-            <div className="text-5xl font-bold text-red-600">{match.away_score}</div>
+            <div className="flex items-center justify-center gap-3">
+              <div className="text-5xl font-bold text-red-600">{match.away_score}</div>
+              <div className="text-2xl font-semibold text-gray-500 dark:text-gray-400">({awaySetsWon})</div>
+            </div>
             <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({t('matchDetail.totalPoints', { count: awayTotalPoints })})</div>
           </div>
         </div>
