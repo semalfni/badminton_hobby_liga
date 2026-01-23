@@ -500,7 +500,8 @@ const database = {
         
         let gamesPlayed = 0;
         let gamesWon = 0;
-        let gamesLost = 0;
+        let setsWon = 0;
+        let setsLost = 0;
         let totalPoints = 0;
         
         for (const pair of pairsResult.rows) {
@@ -511,24 +512,54 @@ const database = {
             let homeGames = 0;
             let awayGames = 0;
             
-            if (pair.game1_home_score > pair.game1_away_score) homeGames++;
-            else if (pair.game1_away_score > pair.game1_home_score) awayGames++;
+            // Count sets and determine winner of each set
+            // Set 1
+            if (pair.game1_home_score > 0 || pair.game1_away_score > 0) {
+              if (pair.game1_home_score > pair.game1_away_score) {
+                homeGames++;
+                if (isHome) setsWon++;
+                else setsLost++;
+              } else if (pair.game1_away_score > pair.game1_home_score) {
+                awayGames++;
+                if (isAway) setsWon++;
+                else setsLost++;
+              }
+            }
             
-            if (pair.game2_home_score > pair.game2_away_score) homeGames++;
-            else if (pair.game2_away_score > pair.game2_home_score) awayGames++;
+            // Set 2
+            if (pair.game2_home_score > 0 || pair.game2_away_score > 0) {
+              if (pair.game2_home_score > pair.game2_away_score) {
+                homeGames++;
+                if (isHome) setsWon++;
+                else setsLost++;
+              } else if (pair.game2_away_score > pair.game2_home_score) {
+                awayGames++;
+                if (isAway) setsWon++;
+                else setsLost++;
+              }
+            }
             
-            if (pair.game3_home_score > pair.game3_away_score) homeGames++;
-            else if (pair.game3_away_score > pair.game3_home_score) awayGames++;
+            // Set 3
+            if (pair.game3_home_score > 0 || pair.game3_away_score > 0) {
+              if (pair.game3_home_score > pair.game3_away_score) {
+                homeGames++;
+                if (isHome) setsWon++;
+                else setsLost++;
+              } else if (pair.game3_away_score > pair.game3_home_score) {
+                awayGames++;
+                if (isAway) setsWon++;
+                else setsLost++;
+              }
+            }
             
             gamesPlayed++;
             
+            // Determine if player won this game (for games_won statistic)
             if (isHome) {
               if (homeGames > awayGames) gamesWon++;
-              else if (awayGames > homeGames) gamesLost++;
               totalPoints += (pair.game1_home_score || 0) + (pair.game2_home_score || 0) + (pair.game3_home_score || 0);
             } else {
               if (awayGames > homeGames) gamesWon++;
-              else if (homeGames > awayGames) gamesLost++;
               totalPoints += (pair.game1_away_score || 0) + (pair.game2_away_score || 0) + (pair.game3_away_score || 0);
             }
           }
@@ -541,7 +572,8 @@ const database = {
           team_name: player.team_name,
           games_played: gamesPlayed,
           games_won: gamesWon,
-          games_lost: gamesLost,
+          sets_won: setsWon,
+          sets_lost: setsLost,
           total_points: totalPoints,
           avg_points: gamesPlayed > 0 ? (totalPoints / gamesPlayed).toFixed(1) : '0.0',
         };

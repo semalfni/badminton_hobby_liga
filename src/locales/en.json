@@ -143,6 +143,7 @@
     "gamesPlayed": "Games Played",
     "gamesWon": "Games Won",
     "gamesLost": "Games Lost",
+    "sets": "Sets (Won - Lost)",
     "winRate": "Win Rate",
     "totalPoints": "Total Points",
     "avgPoints": "Avg Points",

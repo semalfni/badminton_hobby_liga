@@ -9,7 +9,8 @@ interface PlayerStatistics {
   team_name: string;
   games_played: number;
   games_won: number;
-  games_lost: number;
+  sets_won: number;
+  sets_lost: number;
   total_points: number;
   avg_points: string;
 }
@@ -50,7 +51,7 @@ function Statistics() {
                   {t('statistics.gamesWon')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  {t('statistics.gamesLost')}
+                  {t('statistics.sets')}
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   {t('statistics.winRate')}
@@ -65,8 +66,9 @@ function Statistics() {
             </thead>
             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
               {statistics?.map((stat, index) => {
-                const winRate = stat.games_played > 0 
-                  ? ((stat.games_won / stat.games_played) * 100).toFixed(1) 
+                const setsPlayed = stat.sets_won + stat.sets_lost;
+                const winRate = setsPlayed > 0 
+                  ? ((stat.sets_won / setsPlayed) * 100).toFixed(1) 
                   : '0.0';
                 
                 return (
@@ -102,8 +104,8 @@ function Statistics() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="text-sm text-red-600 dark:text-red-400 font-medium">
-                        {stat.games_lost}
+                      <div className="text-sm text-gray-900 dark:text-white">
+                        {stat.sets_won} - {stat.sets_lost}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -155,8 +157,12 @@ function Statistics() {
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {statistics && statistics.length > 0 
               ? [...statistics]
-                  .filter(s => s.games_played >= 3) // Minimum 3 games
-                  .sort((a, b) => (b.games_won / b.games_played) - (a.games_won / a.games_played))[0]?.name || 'N/A'
+                  .filter(s => (s.sets_won + s.sets_lost) >= 6) // Minimum 6 sets played
+                  .sort((a, b) => {
+                    const aTotal = a.sets_won + a.sets_lost;
+                    const bTotal = b.sets_won + b.sets_lost;
+                    return (b.sets_won / bTotal) - (a.sets_won / aTotal);
+                  })[0]?.name || 'N/A'
               : 'N/A'
             }
           </div>
@@ -164,11 +170,15 @@ function Statistics() {
             {statistics && statistics.length > 0 
               ? (() => {
                   const topPlayer = [...statistics]
-                    .filter(s => s.games_played >= 3)
-                    .sort((a, b) => (b.games_won / b.games_played) - (a.games_won / a.games_played))[0];
-                  return topPlayer 
-                    ? `${((topPlayer.games_won / topPlayer.games_played) * 100).toFixed(1)}%`
-                    : '0%';
+                    .filter(s => (s.sets_won + s.sets_lost) >= 6)
+                    .sort((a, b) => {
+                      const aTotal = a.sets_won + a.sets_lost;
+                      const bTotal = b.sets_won + b.sets_lost;
+                      return (b.sets_won / bTotal) - (a.sets_won / aTotal);
+                    })[0];
+                  if (!topPlayer) return '0%';
+                  const total = topPlayer.sets_won + topPlayer.sets_lost;
+                  return `${((topPlayer.sets_won / total) * 100).toFixed(1)}%`;
                 })()
               : '0%'
             }
