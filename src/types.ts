@@ -31,6 +31,9 @@ export interface Match {
   home_score: number;
   away_score: number;
   completed: boolean;
+  mvp_player_id?: number | null;
+  mvp_player_name?: string | null;
+  mvp_team_id?: number | null;
   created_at: string;
   home_team_name?: string;
   away_team_name?: string;

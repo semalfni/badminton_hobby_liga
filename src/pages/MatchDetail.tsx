@@ -333,6 +333,23 @@ export default function MatchDetail() {
             <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">({t('matchDetail.totalPoints', { count: awayTotalPoints })})</div>
           </div>
         </div>
+        
+        {/* MVP Display */}
+        {match.completed && match.mvp_player_name && (
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-3xl">🏆</span>
+              <div className="text-center">
+                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wider">
+                  {t('matches.mvp')}
+                </div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white">
+                  {match.mvp_player_name}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {canEditMatch && (

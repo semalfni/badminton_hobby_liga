@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS matches (
     home_score INTEGER DEFAULT 0,
     away_score INTEGER DEFAULT 0,
     completed BOOLEAN DEFAULT FALSE,
+    mvp_player_id INTEGER REFERENCES players(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

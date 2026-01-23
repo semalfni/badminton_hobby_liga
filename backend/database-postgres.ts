@@ -143,10 +143,13 @@ const database = {
       SELECT 
         m.*,
         ht.name as home_team_name,
-        at.name as away_team_name
+        at.name as away_team_name,
+        mvp.name as mvp_player_name,
+        mvp.team_id as mvp_team_id
       FROM matches m
       JOIN teams ht ON m.home_team_id = ht.id
       JOIN teams at ON m.away_team_id = at.id
+      LEFT JOIN players mvp ON m.mvp_player_id = mvp.id
       ORDER BY m.match_date DESC
     `;
     return result.rows;
@@ -157,10 +160,13 @@ const database = {
       SELECT 
         m.*,
         ht.name as home_team_name,
-        at.name as away_team_name
+        at.name as away_team_name,
+        mvp.name as mvp_player_name,
+        mvp.team_id as mvp_team_id
       FROM matches m
       JOIN teams ht ON m.home_team_id = ht.id
       JOIN teams at ON m.away_team_id = at.id
+      LEFT JOIN players mvp ON m.mvp_player_id = mvp.id
       WHERE m.id = ${id}
       LIMIT 1
     `;
@@ -223,15 +229,111 @@ const database = {
 
   async updateMatch(id: number, data: any) {
     const { match_date, location, completed } = data;
+    
+    let mvp_player_id = null;
+    
+    // Calculate MVP if match is being marked as completed
+    if (completed === true) {
+      mvp_player_id = await this.calculateMatchMVP(id);
+    }
+    
     const result = await sql`
       UPDATE matches
       SET match_date = COALESCE(${match_date}, match_date),
           location = COALESCE(${location}, location),
-          completed = COALESCE(${completed}, completed)
+          completed = COALESCE(${completed}, completed),
+          mvp_player_id = ${mvp_player_id}
       WHERE id = ${id}
       RETURNING *
     `;
     return result.rows[0];
+  },
+
+  async calculateMatchMVP(matchId: number) {
+    // Get all match pairs for this match
+    const pairsResult = await sql`
+      SELECT * FROM match_pairs WHERE match_id = ${matchId}
+    `;
+    
+    const pairs = pairsResult.rows;
+    const playerStats: Record<number, { points: number; setsWon: number; gamesWon: number }> = {};
+    
+    // Calculate stats for each player
+    for (const pair of pairs) {
+      const players = [
+        { id: pair.home_player1_id, isHome: true },
+        { id: pair.home_player2_id, isHome: true },
+        { id: pair.away_player1_id, isHome: false },
+        { id: pair.away_player2_id, isHome: false },
+      ].filter(p => p.id);
+      
+      // Calculate home and away sets won in this game
+      let homeSetsWon = 0;
+      let awaySetsWon = 0;
+      let homePoints = 0;
+      let awayPoints = 0;
+      
+      // Set 1
+      if (pair.game1_home_score > 0 || pair.game1_away_score > 0) {
+        homePoints += pair.game1_home_score || 0;
+        awayPoints += pair.game1_away_score || 0;
+        if (pair.game1_home_score > pair.game1_away_score) homeSetsWon++;
+        else if (pair.game1_away_score > pair.game1_home_score) awaySetsWon++;
+      }
+      
+      // Set 2
+      if (pair.game2_home_score > 0 || pair.game2_away_score > 0) {
+        homePoints += pair.game2_home_score || 0;
+        awayPoints += pair.game2_away_score || 0;
+        if (pair.game2_home_score > pair.game2_away_score) homeSetsWon++;
+        else if (pair.game2_away_score > pair.game2_home_score) awaySetsWon++;
+      }
+      
+      // Set 3
+      if (pair.game3_home_score > 0 || pair.game3_away_score > 0) {
+        homePoints += pair.game3_home_score || 0;
+        awayPoints += pair.game3_away_score || 0;
+        if (pair.game3_home_score > pair.game3_away_score) homeSetsWon++;
+        else if (pair.game3_away_score > pair.game3_home_score) awaySetsWon++;
+      }
+      
+      const homeWonGame = homeSetsWon > awaySetsWon ? 1 : 0;
+      const awayWonGame = awaySetsWon > homeSetsWon ? 1 : 0;
+      
+      // Attribute stats to each player
+      for (const player of players) {
+        if (!playerStats[player.id]) {
+          playerStats[player.id] = { points: 0, setsWon: 0, gamesWon: 0 };
+        }
+        
+        if (player.isHome) {
+          playerStats[player.id].points += homePoints;
+          playerStats[player.id].setsWon += homeSetsWon;
+          playerStats[player.id].gamesWon += homeWonGame;
+        } else {
+          playerStats[player.id].points += awayPoints;
+          playerStats[player.id].setsWon += awaySetsWon;
+          playerStats[player.id].gamesWon += awayWonGame;
+        }
+      }
+    }
+    
+    // Find MVP (player with most points, then sets won, then games won)
+    let mvpId = null;
+    let maxScore = { gamesWon: 0, setsWon: 0, points: 0 };
+    
+    for (const [playerId, stats] of Object.entries(playerStats)) {
+      if (
+        stats.gamesWon > maxScore.gamesWon ||
+        (stats.gamesWon === maxScore.gamesWon && stats.setsWon > maxScore.setsWon) ||
+        (stats.gamesWon === maxScore.gamesWon && stats.setsWon === maxScore.setsWon && stats.points > maxScore.points)
+      ) {
+        maxScore = stats;
+        mvpId = Number(playerId);
+      }
+    }
+    
+    return mvpId;
   },
 
   async deleteMatch(id: number) {

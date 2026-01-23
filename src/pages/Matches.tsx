@@ -238,6 +238,19 @@ export default function Matches() {
                     </span>
                   </div>
                 </div>
+                
+                {/* MVP Display */}
+                {match.completed && match.mvp_player_name && (
+                  <div className="mt-3 flex items-center gap-2">
+                    <span className="text-lg">🏆</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      <span className="font-medium">{t('matches.mvp')}:</span>{' '}
+                      <span className="text-gray-900 dark:text-white font-semibold">
+                        {match.mvp_player_name}
+                      </span>
+                    </span>
+                  </div>
+                )}
               </div>
               
               {/* Action Buttons */}
