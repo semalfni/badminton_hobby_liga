@@ -722,7 +722,11 @@ const database = {
       })
     );
     
-    return statistics.sort((a, b) => b.total_points - a.total_points);
+    return statistics.sort((a, b) => {
+      // Sort by sets won first, then by total points
+      if (b.sets_won !== a.sets_won) return b.sets_won - a.sets_won;
+      return b.total_points - a.total_points;
+    });
   },
 
   // Users
