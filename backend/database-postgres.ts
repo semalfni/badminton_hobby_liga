@@ -723,8 +723,11 @@ const database = {
     );
     
     return statistics.sort((a, b) => {
-      // Sort by sets won first, then by total points
+      // Sort by sets won first
       if (b.sets_won !== a.sets_won) return b.sets_won - a.sets_won;
+      // Then by sets lost (fewer is better)
+      if (a.sets_lost !== b.sets_lost) return a.sets_lost - b.sets_lost;
+      // Finally by total points
       return b.total_points - a.total_points;
     });
   },
