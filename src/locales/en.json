@@ -55,6 +55,8 @@
     "gamesWon": "GW",
     "gamesWonFull": "Games Won",
     "gamesLostFull": "Games Lost",
+    "sets": "Sets",
+    "setsFormat": "Sets (Won - Lost)",
     "points": "Pts",
     "pointsFormat": "Points (Won - Lost)"
   },

@@ -37,18 +37,18 @@ export default function Standings() {
                 <span className="md:hidden">{t('standings.gamesWon') || 'GW'}</span>
                 <span className="hidden md:inline">{t('standings.gamesWonFull') || 'Games Won'}</span>
               </th>
+              <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300">
+                <span className="md:hidden">{t('standings.sets') || 'Sets'}</span>
+                <span className="hidden md:inline">{t('standings.setsFormat') || 'Sets (Won - Lost)'}</span>
+              </th>
               <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-bold">
                 <span className="md:hidden">{t('standings.points') || 'Pts'}</span>
-                <span className="hidden md:inline">{t('standings.pointsFormat') || 'Points'}</span>
+                <span className="hidden md:inline">{t('standings.pointsFormat') || 'Points (Won - Lost)'}</span>
               </th>
             </tr>
           </thead>
           <tbody>
             {standings?.map((standing, index) => {
-              const gamesWon = standing.games_won || 0;
-              const gamesLost = standing.games_lost || 0;
-              const gamesPlayed = gamesWon + gamesLost;
-              
               return (
                 <tr
                   key={standing.team_id}
@@ -61,13 +61,16 @@ export default function Standings() {
                     {standing.team_name}
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-700 dark:text-gray-300">
-                    {gamesPlayed}
+                    {standing.games_played || 0}
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-green-600 dark:text-green-400">
-                    {gamesWon}
+                    {standing.games_won || 0}
+                  </td>
+                  <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-900 dark:text-white">
+                    {standing.sets_won || 0} - {standing.sets_lost || 0}
                   </td>
                   <td className="py-2 md:py-3 px-2 md:px-4 text-center text-gray-900 dark:text-white font-bold">
-                    {gamesWon} - {gamesLost}
+                    {standing.points_won || 0} - {standing.points_lost || 0}
                   </td>
                 </tr>
               );

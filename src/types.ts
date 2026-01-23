@@ -63,10 +63,10 @@ export interface MatchWithPairs extends Match {
 export interface Standing {
   team_id: number;
   team_name: string;
-  played: number;
-  won: number;
-  lost: number;
+  games_played: number;
   games_won: number;
-  games_lost: number;
-  points: number;
+  sets_won: number;
+  sets_lost: number;
+  points_won: number;
+  points_lost: number;
 }

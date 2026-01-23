@@ -340,56 +340,141 @@ const database = {
   async getStandings() {
     const teamsResult = await sql`SELECT * FROM teams ORDER BY name`;
     const teams = teamsResult.rows;
-    const matches = await sql`SELECT * FROM matches WHERE completed = true`;
+    
+    // Get all completed matches
+    const completedMatches = await sql`
+      SELECT id, home_team_id, away_team_id 
+      FROM matches 
+      WHERE completed = true
+    `;
+    const matchIds = completedMatches.rows.map((m: any) => m.id);
+    
+    // Get all match pairs for completed matches
+    const pairsResult = matchIds.length > 0 
+      ? await sql`SELECT * FROM match_pairs WHERE match_id = ANY(${matchIds})`
+      : { rows: [] };
     
     return teams.map((team: any) => {
-      const homeMatches = matches.rows.filter((m: any) => m.home_team_id === team.id);
-      const awayMatches = matches.rows.filter((m: any) => m.away_team_id === team.id);
+      let gamesPlayed = 0;
+      let gamesWon = 0;
+      let setsWon = 0;
+      let setsLost = 0;
+      let pointsWon = 0;
+      let pointsLost = 0;
       
-      let wins = 0;
-      let losses = 0;
-      let draws = 0;
-      let pairsWon = 0;
-      let pairsLost = 0;
-      
-      homeMatches.forEach((m: any) => {
-        pairsWon += m.home_score || 0;
-        pairsLost += m.away_score || 0;
-        if (m.home_score > m.away_score) wins++;
-        else if (m.home_score < m.away_score) losses++;
-        else draws++;
-      });
-      
-      awayMatches.forEach((m: any) => {
-        pairsWon += m.away_score || 0;
-        pairsLost += m.home_score || 0;
-        if (m.away_score > m.home_score) wins++;
-        else if (m.away_score < m.home_score) losses++;
-        else draws++;
-      });
-      
-      const played = wins + losses + draws;
-      const matchPoints = wins * 3 + draws; // Points for winning matches
-      const pairsDiff = pairsWon - pairsLost;
+      // Process each game (match_pair)
+      for (const pair of pairsResult.rows) {
+        const match = completedMatches.rows.find((m: any) => m.id === pair.match_id);
+        if (!match) continue;
+        
+        const isHome = match.home_team_id === team.id;
+        const isAway = match.away_team_id === team.id;
+        
+        if (!isHome && !isAway) continue;
+        
+        // Count this game
+        gamesPlayed++;
+        
+        // Count sets won in each game (set)
+        let teamSetsWonInGame = 0;
+        let opponentSetsWonInGame = 0;
+        
+        // Set 1
+        if (pair.game1_home_score > 0 || pair.game1_away_score > 0) {
+          if (isHome) {
+            pointsWon += pair.game1_home_score || 0;
+            pointsLost += pair.game1_away_score || 0;
+            if (pair.game1_home_score > pair.game1_away_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game1_away_score > pair.game1_home_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          } else {
+            pointsWon += pair.game1_away_score || 0;
+            pointsLost += pair.game1_home_score || 0;
+            if (pair.game1_away_score > pair.game1_home_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game1_home_score > pair.game1_away_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          }
+        }
+        
+        // Set 2
+        if (pair.game2_home_score > 0 || pair.game2_away_score > 0) {
+          if (isHome) {
+            pointsWon += pair.game2_home_score || 0;
+            pointsLost += pair.game2_away_score || 0;
+            if (pair.game2_home_score > pair.game2_away_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game2_away_score > pair.game2_home_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          } else {
+            pointsWon += pair.game2_away_score || 0;
+            pointsLost += pair.game2_home_score || 0;
+            if (pair.game2_away_score > pair.game2_home_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game2_home_score > pair.game2_away_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          }
+        }
+        
+        // Set 3 (if played)
+        if (pair.game3_home_score > 0 || pair.game3_away_score > 0) {
+          if (isHome) {
+            pointsWon += pair.game3_home_score || 0;
+            pointsLost += pair.game3_away_score || 0;
+            if (pair.game3_home_score > pair.game3_away_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game3_away_score > pair.game3_home_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          } else {
+            pointsWon += pair.game3_away_score || 0;
+            pointsLost += pair.game3_home_score || 0;
+            if (pair.game3_away_score > pair.game3_home_score) {
+              setsWon++;
+              teamSetsWonInGame++;
+            } else if (pair.game3_home_score > pair.game3_away_score) {
+              setsLost++;
+              opponentSetsWonInGame++;
+            }
+          }
+        }
+        
+        // Determine if team won this game (best of 3 sets)
+        if (teamSetsWonInGame > opponentSetsWonInGame) {
+          gamesWon++;
+        }
+      }
       
       return {
         team_id: team.id,
         team_name: team.name,
-        played,
-        won: wins,
-        draws,
-        lost: losses,
-        games_won: pairsWon,
-        games_lost: pairsLost,
-        pairs_diff: pairsDiff,
-        match_points: matchPoints, // Points from match wins
-        points: pairsWon, // Total points from all games won
+        games_played: gamesPlayed,
+        games_won: gamesWon,
+        sets_won: setsWon,
+        sets_lost: setsLost,
+        points_won: pointsWon,
+        points_lost: pointsLost,
       };
     }).sort((a: any, b: any) => {
-      // Sort by total game points first, then by match points, then by pairs diff
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.match_points !== a.match_points) return b.match_points - a.match_points;
-      return b.pairs_diff - a.pairs_diff;
+      // Sort by games won first, then by sets won, then by points won
+      if (b.games_won !== a.games_won) return b.games_won - a.games_won;
+      if (b.sets_won !== a.sets_won) return b.sets_won - a.sets_won;
+      return b.points_won - a.points_won;
     });
   },
 

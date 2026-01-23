@@ -55,6 +55,8 @@
     "gamesWon": "SG",
     "gamesWonFull": "Spiele gewonnen",
     "gamesLostFull": "Spiele verloren",
+    "sets": "Sätze",
+    "setsFormat": "Sätze (Gewonnen - Verloren)",
     "points": "Pkt",
     "pointsFormat": "Punkte (Gewonnen - Verloren)"
   },
