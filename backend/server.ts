@@ -203,7 +203,7 @@ app.get('/api/matches/:id', async (req, res) => {
   }
 });
 
-app.post('/api/matches', authenticateToken, requireRole('admin'), async (req, res) => {
+app.post('/api/matches', authenticateToken, requireCanEdit, async (req, res) => {
   try {
     const { home_team_id, away_team_id, match_date, location } = req.body;
     const match = await database.createMatch(home_team_id, away_team_id, match_date, location);
