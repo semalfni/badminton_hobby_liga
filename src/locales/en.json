@@ -61,7 +61,11 @@
     "sets": "Sets",
     "setsFormat": "Sets (Won - Lost)",
     "points": "Pts",
-    "pointsFormat": "Points (Won - Lost)"
+    "pointsFormat": "Points (Won - Lost)",
+    "showChart": "Show Progression Chart",
+    "hideChart": "Hide Chart",
+    "progressionChart": "Team Standings Progression",
+    "chartDescription": "Track how team positions changed after each completed match"
   },
   "teams": {
     "title": "Teams",

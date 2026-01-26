@@ -174,6 +174,11 @@ export const api = {
     return res.json();
   },
 
+  getStandingsHistory: async () => {
+    const res = await fetch(`${API_URL}/standings/history`);
+    return res.json();
+  },
+
   // Match Nominations
   getNominations: async (matchId: number) => {
     const res = await fetch(`${API_URL}/matches/${matchId}/nominations`);

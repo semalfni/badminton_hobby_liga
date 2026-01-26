@@ -61,7 +61,11 @@
     "sets": "Sätze",
     "setsFormat": "Sätze (Gewonnen - Verloren)",
     "points": "Pkt",
-    "pointsFormat": "Punkte (Gewonnen - Verloren)"
+    "pointsFormat": "Punkte (Gewonnen - Verloren)",
+    "showChart": "Verlaufsdiagramm anzeigen",
+    "hideChart": "Diagramm ausblenden",
+    "progressionChart": "Tabellenverlauf",
+    "chartDescription": "Verfolgen Sie, wie sich die Teampositionen nach jedem abgeschlossenen Match verändert haben"
   },
   "teams": {
     "title": "Teams",

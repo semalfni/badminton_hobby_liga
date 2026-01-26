@@ -620,6 +620,167 @@ const database = {
     });
   },
 
+  // Standings History - track team positions after each completed match
+  async getStandingsHistory() {
+    const teamsResult = await sql`SELECT id, name FROM teams ORDER BY name`;
+    const teams = teamsResult.rows;
+    
+    // Get all completed matches ordered by date
+    const completedMatches = await sql`
+      SELECT id, home_team_id, away_team_id, match_date
+      FROM matches 
+      WHERE completed = true
+      ORDER BY match_date ASC, id ASC
+    `;
+    
+    if (completedMatches.rows.length === 0) {
+      return [];
+    }
+    
+    const history: any[] = [];
+    
+    // Calculate standings after each match
+    for (let matchIndex = 0; matchIndex < completedMatches.rows.length; matchIndex++) {
+      const matchesUpToNow = completedMatches.rows.slice(0, matchIndex + 1);
+      const matchIds = matchesUpToNow.map((m: any) => m.id);
+      
+      // Get all match pairs for these matches
+      const pairsResult = await sql`SELECT * FROM match_pairs WHERE match_id = ANY(${matchIds})`;
+      
+      const standings = teams.map((team: any) => {
+        let gamesPlayed = 0;
+        let gamesWon = 0;
+        let setsWon = 0;
+        let setsLost = 0;
+        let pointsWon = 0;
+        let pointsLost = 0;
+        
+        // Process each game (match_pair)
+        for (const pair of pairsResult.rows) {
+          const match = matchesUpToNow.find((m: any) => m.id === pair.match_id);
+          if (!match) continue;
+          
+          const isHome = match.home_team_id === team.id;
+          const isAway = match.away_team_id === team.id;
+          
+          if (!isHome && !isAway) continue;
+          
+          gamesPlayed++;
+          
+          let teamSetsWonInGame = 0;
+          let opponentSetsWonInGame = 0;
+          
+          // Set 1
+          if (pair.game1_home_score > 0 || pair.game1_away_score > 0) {
+            if (isHome) {
+              pointsWon += pair.game1_home_score || 0;
+              pointsLost += pair.game1_away_score || 0;
+              if (pair.game1_home_score > pair.game1_away_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game1_away_score > pair.game1_home_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            } else {
+              pointsWon += pair.game1_away_score || 0;
+              pointsLost += pair.game1_home_score || 0;
+              if (pair.game1_away_score > pair.game1_home_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game1_home_score > pair.game1_away_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            }
+          }
+          
+          // Set 2
+          if (pair.game2_home_score > 0 || pair.game2_away_score > 0) {
+            if (isHome) {
+              pointsWon += pair.game2_home_score || 0;
+              pointsLost += pair.game2_away_score || 0;
+              if (pair.game2_home_score > pair.game2_away_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game2_away_score > pair.game2_home_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            } else {
+              pointsWon += pair.game2_away_score || 0;
+              pointsLost += pair.game2_home_score || 0;
+              if (pair.game2_away_score > pair.game2_home_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game2_home_score > pair.game2_away_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            }
+          }
+          
+          // Set 3
+          if (pair.game3_home_score > 0 || pair.game3_away_score > 0) {
+            if (isHome) {
+              pointsWon += pair.game3_home_score || 0;
+              pointsLost += pair.game3_away_score || 0;
+              if (pair.game3_home_score > pair.game3_away_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game3_away_score > pair.game3_home_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            } else {
+              pointsWon += pair.game3_away_score || 0;
+              pointsLost += pair.game3_home_score || 0;
+              if (pair.game3_away_score > pair.game3_home_score) {
+                setsWon++;
+                teamSetsWonInGame++;
+              } else if (pair.game3_home_score > pair.game3_away_score) {
+                setsLost++;
+                opponentSetsWonInGame++;
+              }
+            }
+          }
+          
+          // Determine if team won this game (needs 2 or more sets)
+          if (teamSetsWonInGame >= 2) {
+            gamesWon++;
+          }
+        }
+        
+        return {
+          team_id: team.id,
+          team_name: team.name,
+          games_won: gamesWon,
+          sets_won: setsWon,
+          sets_lost: setsLost,
+          points_won: pointsWon,
+        };
+      }).sort((a: any, b: any) => {
+        if (b.games_won !== a.games_won) return b.games_won - a.games_won;
+        if (b.sets_won !== a.sets_won) return b.sets_won - a.sets_won;
+        return b.points_won - a.points_won;
+      });
+      
+      // Assign positions
+      const standingsWithPositions = standings.map((standing: any, index: number) => ({
+        ...standing,
+        position: index + 1,
+      }));
+      
+      history.push({
+        matchNumber: matchIndex + 1,
+        matchDate: matchesUpToNow[matchIndex].match_date,
+        standings: standingsWithPositions,
+      });
+    }
+    
+    return history;
+  },
+
   // Player Statistics
   async getPlayerStatistics() {
     const players = await sql`

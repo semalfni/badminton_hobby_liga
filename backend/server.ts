@@ -273,6 +273,15 @@ app.get('/api/standings', async (req, res) => {
   }
 });
 
+app.get('/api/standings/history', async (req, res) => {
+  try {
+    const history = await database.getStandingsHistory();
+    res.json(history);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch standings history' });
+  }
+});
+
 // Player Statistics
 app.get('/api/player-statistics', async (req, res) => {
   try {
