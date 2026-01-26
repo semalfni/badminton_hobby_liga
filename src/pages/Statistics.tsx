@@ -144,16 +144,23 @@ function Statistics() {
         </div>
       </div>
 
+      {/* Footer with summary statistics */}
       <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
         <div className="card bg-blue-50 dark:bg-blue-900/20">
           <h3 className="text-base md:text-lg font-semibold text-blue-900 dark:text-blue-300 mb-2">
             {t('statistics.mostPoints')}
           </h3>
           <div className="text-xl md:text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">
-            {statistics?.[0]?.name || 'N/A'}
+            {statistics && statistics.length > 0 
+              ? [...statistics].sort((a, b) => b.total_points - a.total_points)[0]?.name || 'N/A'
+              : 'N/A'
+            }
           </div>
           <div className="text-xs md:text-sm text-blue-700 dark:text-blue-500">
-            {statistics?.[0]?.total_points || 0} {t('statistics.points')}
+            {statistics && statistics.length > 0 
+              ? `${[...statistics].sort((a, b) => b.total_points - a.total_points)[0]?.total_points || 0} ${t('statistics.points')}`
+              : `0 ${t('statistics.points')}`
+            }
           </div>
         </div>
 
