@@ -47,7 +47,7 @@ export default function Standings() {
   // Transform data for the chart
   const chartData = standingsHistory?.map((point) => {
     const dataPoint: any = {
-      match: point.matchNumber === 0 ? 'Start' : `Round ${point.matchNumber}`,
+      match: point.matchNumber === 0 ? 'Start' : `${point.matchNumber} ${point.matchNumber === 1 ? 'Match' : 'Matches'}`,
       matchNumber: point.matchNumber,
     };
     

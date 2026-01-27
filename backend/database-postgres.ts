@@ -620,7 +620,7 @@ const database = {
     });
   },
 
-  // Standings History - track team positions after each completed match
+  // Standings History - track team positions after each team has played N matches
   async getStandingsHistory() {
     const teamsResult = await sql`SELECT id, name FROM teams ORDER BY name`;
     const teams = teamsResult.rows;
@@ -637,9 +637,24 @@ const database = {
       return [];
     }
     
+    // Get all match pairs
+    const allMatchIds = completedMatches.rows.map((m: any) => m.id);
+    const allPairsResult = await sql`SELECT * FROM match_pairs WHERE match_id = ANY(${allMatchIds})`;
+    
+    // Count how many matches each team has played
+    const teamMatchCounts = new Map<number, number>();
+    teams.forEach((team: any) => {
+      const matchCount = completedMatches.rows.filter((m: any) => 
+        m.home_team_id === team.id || m.away_team_id === team.id
+      ).length;
+      teamMatchCounts.set(team.id, matchCount);
+    });
+    
+    const maxMatchesPlayed = Math.max(...Array.from(teamMatchCounts.values()));
+    
     const history: any[] = [];
     
-    // Add initial state (Round 0) where all teams are tied at position 1
+    // Add initial state (0 matches played)
     const initialStandings = teams.map((team: any) => ({
       team_id: team.id,
       team_name: team.name,
@@ -651,19 +666,31 @@ const database = {
     
     history.push({
       matchNumber: 0,
-      matchDate: completedMatches.rows[0].match_date,
       standings: initialStandings,
     });
     
-    // Calculate standings after each match
-    for (let matchIndex = 0; matchIndex < completedMatches.rows.length; matchIndex++) {
-      const matchesUpToNow = completedMatches.rows.slice(0, matchIndex + 1);
-      const matchIds = matchesUpToNow.map((m: any) => m.id);
-      
-      // Get all match pairs for these matches
-      const pairsResult = await sql`SELECT * FROM match_pairs WHERE match_id = ANY(${matchIds})`;
-      
+    // Calculate standings after each team has played N matches
+    for (let matchesPerTeam = 1; matchesPerTeam <= maxMatchesPlayed; matchesPerTeam++) {
       const standings = teams.map((team: any) => {
+        // Get the first N matches for this team
+        const teamMatches = completedMatches.rows
+          .filter((m: any) => m.home_team_id === team.id || m.away_team_id === team.id)
+          .slice(0, matchesPerTeam);
+        
+        if (teamMatches.length === 0) {
+          return {
+            team_id: team.id,
+            team_name: team.name,
+            games_won: 0,
+            sets_won: 0,
+            sets_lost: 0,
+            points_won: 0,
+            matchesPlayed: 0,
+          };
+        }
+        
+        const teamMatchIds = teamMatches.map((m: any) => m.id);
+        
         let gamesPlayed = 0;
         let gamesWon = 0;
         let setsWon = 0;
@@ -671,9 +698,11 @@ const database = {
         let pointsWon = 0;
         let pointsLost = 0;
         
-        // Process each game (match_pair)
-        for (const pair of pairsResult.rows) {
-          const match = matchesUpToNow.find((m: any) => m.id === pair.match_id);
+        // Process each game (match_pair) for this team's matches
+        for (const pair of allPairsResult.rows) {
+          if (!teamMatchIds.includes(pair.match_id)) continue;
+          
+          const match = teamMatches.find((m: any) => m.id === pair.match_id);
           if (!match) continue;
           
           const isHome = match.home_team_id === team.id;
@@ -774,6 +803,7 @@ const database = {
           sets_won: setsWon,
           sets_lost: setsLost,
           points_won: pointsWon,
+          matchesPlayed: teamMatches.length,
         };
       }).sort((a: any, b: any) => {
         if (b.games_won !== a.games_won) return b.games_won - a.games_won;
@@ -788,8 +818,7 @@ const database = {
       }));
       
       history.push({
-        matchNumber: matchIndex + 1,
-        matchDate: matchesUpToNow[matchIndex].match_date,
+        matchNumber: matchesPerTeam,
         standings: standingsWithPositions,
       });
     }

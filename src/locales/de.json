@@ -65,7 +65,7 @@
     "showChart": "Verlaufsdiagramm anzeigen",
     "hideChart": "Diagramm ausblenden",
     "progressionChart": "Tabellenverlauf",
-    "chartDescription": "Verfolgen Sie, wie sich die Teampositionen nach jedem abgeschlossenen Match verändert haben"
+    "chartDescription": "Vergleichen Sie die Teampositionen, nachdem jedes Team 1 Match, 2 Matches, 3 Matches usw. gespielt hat"
   },
   "teams": {
     "title": "Teams",
