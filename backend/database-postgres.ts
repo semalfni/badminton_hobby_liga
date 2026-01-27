@@ -639,6 +639,22 @@ const database = {
     
     const history: any[] = [];
     
+    // Add initial state (Round 0) where all teams are tied at position 1
+    const initialStandings = teams.map((team: any) => ({
+      team_id: team.id,
+      team_name: team.name,
+      position: 1,
+      games_won: 0,
+      sets_won: 0,
+      points_won: 0,
+    }));
+    
+    history.push({
+      matchNumber: 0,
+      matchDate: completedMatches.rows[0].match_date,
+      standings: initialStandings,
+    });
+    
     // Calculate standings after each match
     for (let matchIndex = 0; matchIndex < completedMatches.rows.length; matchIndex++) {
       const matchesUpToNow = completedMatches.rows.slice(0, matchIndex + 1);
