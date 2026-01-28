@@ -314,7 +314,10 @@ export default function MatchDetail() {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {t('matchDetail.title')}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">{formatDate(match.match_date)}</p>
+            <p className="text-gray-600 dark:text-gray-400">📅 {formatDate(match.match_date)}</p>
+            {match.home_team_time && (
+              <p className="text-gray-600 dark:text-gray-400">🕐 {match.home_team_time}</p>
+            )}
             <p className="text-gray-600 dark:text-gray-400">📍 {match.location}</p>
           </div>
           <span

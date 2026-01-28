@@ -194,7 +194,7 @@ export default function Matches() {
             {/* Mobile and Desktop Layout */}
             <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
               <div className="flex-1">
-                {/* Status Badge, Date, and Location */}
+                {/* Status Badge, Date, Time, and Location */}
                 <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-3">
                   <span
                     className={`px-2 py-1 text-xs font-medium rounded ${
@@ -206,8 +206,13 @@ export default function Matches() {
                     {match.completed ? t('matches.completed') : t('matches.inProgress')}
                   </span>
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {formatDate(match.match_date)}
+                    📅 {formatDate(match.match_date)}
                   </span>
+                  {match.home_team_time && (
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      🕐 {match.home_team_time}
+                    </span>
+                  )}
                   <span className="text-sm text-gray-600 dark:text-gray-400 break-all">
                     📍 {match.location}
                   </span>

@@ -143,6 +143,7 @@ const database = {
       SELECT 
         m.*,
         ht.name as home_team_name,
+        ht.home_time as home_team_time,
         at.name as away_team_name,
         mvp.name as mvp_player_name,
         mvp.team_id as mvp_team_id
@@ -193,6 +194,7 @@ const database = {
       SELECT 
         m.*,
         ht.name as home_team_name,
+        ht.home_time as home_team_time,
         at.name as away_team_name,
         mvp.name as mvp_player_name,
         mvp.team_id as mvp_team_id
